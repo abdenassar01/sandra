@@ -8,7 +8,7 @@ export function About() {
 	return (
 		<div id="About" className="flex gap-4">
 			<Image
-				src="/images/about.webp"
+				src="/images/about.png"
 				alt="About Us"
 				width={500}
 				height={500}
