@@ -23,7 +23,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${poppins.variable} antialiased bg-background`}>
-				<div className="container">
+				<div className="container flex flex-col gap-4">
 					<Header />
 					<div>{children}</div>
 					<Footer />

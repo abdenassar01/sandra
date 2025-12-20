@@ -19,7 +19,7 @@ export function Header() {
 	};
 
 	return (
-		<header className="rounded-2xl p-2 bg-black my-2 flex justify-between items-center relative">
+		<header className="rounded-2xl p-2 bg-black mt-2 flex justify-between items-center relative">
 			<Image src="/logo.png" alt="logo" width={40} height={40} className="w-10 h-10" />
 
 			{/* Desktop Navigation */}
