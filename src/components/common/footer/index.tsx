@@ -76,7 +76,7 @@ export function Footer() {
 
 					{/* Quick Links */}
 					<div>
-						<h3 className="text-lg font-semibold text-secondary mb-4">Quick Links</h3>
+						<h3 className="text-lg font-semibold text-primary mb-4">Quick Links</h3>
 						<ul className="space-y-2">
 							{footerLinks.quickLinks.map((link) => (
 								<li key={link.name}>
@@ -90,7 +90,7 @@ export function Footer() {
 
 					{/* Services */}
 					<div>
-						<h3 className="text-lg font-semibold text-secondary mb-4">Services</h3>
+						<h3 className="text-lg font-semibold text-primary mb-4">Services</h3>
 						<ul className="space-y-2">
 							{footerLinks.services.map((link) => (
 								<li key={link.name}>
@@ -104,7 +104,7 @@ export function Footer() {
 
 					{/* Contact & CTA */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-secondary mb-4">Contact Us</h3>
+						<h3 className="text-lg font-semibold text-primary mb-4">Contact Us</h3>
 						<div className="space-y-3">
 							<div className="flex items-center gap-3 text-sm text-white/80">
 								<HugeiconsIcon icon={Call02FreeIcons} className="w-4 h-4" />
