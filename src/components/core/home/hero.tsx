@@ -1,7 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export function hero() {
-  return (
-    <div>hero</div>
-  )
+	return <div>hero</div>;
 }
