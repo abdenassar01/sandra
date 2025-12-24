@@ -8,7 +8,12 @@ import { LinkSquare02FreeIcons, Menu01FreeIcons, CancelCircleFreeIcons } from '@
 import { usePathname } from 'next/navigation';
 import { cn } from '@/utils';
 
-const routes = ['Home', 'About', 'Services', 'Pricing'];
+const routes = [
+	{ name: 'Home', href: '/' },
+	{ name: 'About', href: '/#About' },
+	{ name: 'Services', href: '/services' },
+	{ name: 'Pricing', href: '/#Pricing' },
+];
 
 export function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,22 +25,24 @@ export function Header() {
 
 	return (
 		<header className="rounded-2xl p-2 bg-black mt-2 flex justify-between items-center relative">
-			<Image src="/logo.png" alt="logo" width={40} height={40} className="w-10 h-10" />
+			<Link href="/">
+				<Image src="/logo.png" alt="logo" width={40} height={40} className="w-10 h-10" />
+			</Link>
 
 			{/* Desktop Navigation */}
 			<nav className="hidden md:flex items-center gap-2">
 				{routes.map((route) => (
 					<Link
-						key={route}
-						href={`#${route}`}
+						key={route.name}
+						href={route.href}
 						className={cn(
 							'text-sm transition-colors',
-							typeof window !== 'undefined' && window.location.hash === `#${route}`
+							pathname === route.href || (route.href.startsWith('/#') && pathname === '/')
 								? 'text-primary'
 								: 'text-secondary hover:text-primary',
 						)}
 					>
-						{route}
+						{route.name}
 					</Link>
 				))}
 			</nav>
@@ -62,12 +69,15 @@ export function Header() {
 					<nav className="flex flex-col gap-3">
 						{routes.map((route) => (
 							<Link
-								key={route}
-								href={`#${route}`}
-								className="hover:text-primary text-sm text-secondary transition-colors py-2"
+								key={route.name}
+								href={route.href}
+								className={cn(
+									'hover:text-primary text-sm transition-colors py-2',
+									pathname === route.href ? 'text-primary' : 'text-secondary',
+								)}
 								onClick={() => setIsMenuOpen(false)}
 							>
-								{route}
+								{route.name}
 							</Link>
 						))}
 					</nav>

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
 	Home01FreeIcons,
@@ -14,24 +15,28 @@ const services = [
 	{
 		icon: Home01FreeIcons,
 		title: 'House Cleaning',
+		slug: 'house-cleaning',
 		description: 'Complete home cleaning services tailored to your needs. From regular maintenance to deep cleaning.',
 		features: ['Room by room cleaning', 'Kitchen & bathroom sanitization', 'Floor care', 'Window cleaning'],
 	},
 	{
 		icon: Building04FreeIcons,
 		title: 'Office Cleaning',
+		slug: 'office-cleaning',
 		description: 'Professional office cleaning services to create a productive and healthy work environment.',
 		features: ['Work area sanitization', 'Common area cleaning', 'Restroom maintenance', 'Waste disposal'],
 	},
 	{
 		icon: SparklesFreeIcons,
 		title: 'Deep Cleaning',
+		slug: 'deep-cleaning',
 		description: 'Intensive cleaning service for a thorough and detailed clean of every corner of your space.',
 		features: ['Detailed cleaning', 'Hard-to-reach areas', 'Appliance cleaning', 'Baseboards & trim'],
 	},
 	{
 		icon: Wrench01FreeIcons,
 		title: 'Post-Construction',
+		slug: 'post-construction',
 		description: 'Specialized cleaning services after construction or renovation projects.',
 		features: ['Dust removal', 'Debris cleanup', 'Surface polishing', 'Final touch-ups'],
 	},
@@ -53,9 +58,10 @@ export function ServicesSection() {
 
 				{/* Services Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-					{services.map((service, index) => (
-						<div
-							key={service.title}
+					{services.map((service) => (
+						<Link
+							key={service.slug}
+							href={`/services/${service.slug}`}
 							className="group bg-background-secondary rounded-2xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-secondary/20"
 						>
 							{/* Icon */}
@@ -78,14 +84,11 @@ export function ServicesSection() {
 							</ul>
 
 							{/* Learn More Link */}
-							<a
-								href="#"
-								className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-medium"
-							>
+							<div className="inline-flex items-center gap-2 text-primary group-hover:text-primary/80 transition-colors text-sm font-medium">
 								Learn More
 								<HugeiconsIcon icon={LinkSquare02FreeIcons} className="w-4 h-4" />
-							</a>
-						</div>
+							</div>
+						</Link>
 					))}
 				</div>
 

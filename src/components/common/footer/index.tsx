@@ -18,16 +18,16 @@ import { cn } from '@/utils';
 
 const footerLinks = {
 	quickLinks: [
-		{ name: 'Home', href: '#Home' },
-		{ name: 'About', href: '#About' },
-		{ name: 'Services', href: '#Services' },
-		{ name: 'Pricing', href: '#Pricing' },
+		{ name: 'Home', href: '/' },
+		{ name: 'About', href: '/#About' },
+		{ name: 'Services', href: '/services' },
+		{ name: 'Pricing', href: '/#Pricing' },
 	],
 	services: [
-		{ name: 'House Cleaning', href: '#' },
-		{ name: 'Office Cleaning', href: '#' },
-		{ name: 'Deep Cleaning', href: '#' },
-		{ name: 'Post-Construction', href: '#' },
+		{ name: 'House Cleaning', href: '/services/house-cleaning' },
+		{ name: 'Office Cleaning', href: '/services/office-cleaning' },
+		{ name: 'Deep Cleaning', href: '/services/deep-cleaning' },
+		{ name: 'Post-Construction', href: '/services/post-construction' },
 	],
 	company: [
 		{ name: 'About Us', href: '#About' },

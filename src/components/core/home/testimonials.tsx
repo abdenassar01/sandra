@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-import Image from 'next/image';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { QuoteUpFreeIcons, StarFreeIcons } from '@hugeicons/core-free-icons';
 
@@ -35,7 +33,7 @@ const testimonials = [
 export function TestimonialsSection() {
 	return (
 		<section id="Testimonials" className="py-16 md:py-24">
-			<div className="container mx-auto px-4">
+			<div className="">
 				{/* Section Header */}
 				<div className="text-center mb-16">
 					<h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
@@ -88,7 +86,7 @@ export function TestimonialsSection() {
 				</div>
 
 				{/* Bottom CTA */}
-				<div className="mt-16 text-center bg-black rounded-3xl p-8 md:p-12">
+				<div className="mt-16 text-center bg-black rounded-3xl md:p-12">
 					<h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
 						Ready to Experience <span className="text-primary">Professional Cleaning?</span>
 					</h3>

@@ -6,7 +6,7 @@ import React from 'react';
 
 export function About() {
 	return (
-		<div id="About" className="flex gap-4">
+		<div id="About" className="flex gap-4 flex-col md:flex-row">
 			<Image
 				src="/images/about.png"
 				alt="About Us"
