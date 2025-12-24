@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ContactForm, ContactInfo } from '@/components/core/contact';
+import { ReviewForm } from '@/components/common/review-form';
 import { StructuredData, createBreadcrumbStructuredData } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -93,6 +94,15 @@ export default function ContactUs() {
 									</a>
 								</div>
 							</div>
+						</div>
+					</div>
+				</section>
+
+				{/* Review Form Section */}
+				<section id="review" className="py-8 md:py-12">
+					<div className="container mx-auto px-4">
+						<div className="max-w-2xl mx-auto">
+							<ReviewForm />
 						</div>
 					</div>
 				</section>

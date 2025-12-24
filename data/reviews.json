@@ -1,0 +1,47 @@
+[
+	{
+		"id": 1,
+		"name": "Sarah Johnson",
+		"email": "sarah.j@example.com",
+		"rating": 5,
+		"review": "Sandra Cleaning transformed my home! Their attention to detail is amazing, and the team is always professional and punctual.",
+		"approved": true,
+		"created_at": "2025-12-24T23:16:33.768Z"
+	},
+	{
+		"id": 2,
+		"name": "Michael Chen",
+		"email": "michael.chen@example.com",
+		"rating": 5,
+		"review": "We have been using Sandra Cleaning for our office for over a year. They consistently deliver excellent service!",
+		"approved": true,
+		"created_at": "2025-12-24T23:16:33.768Z"
+	},
+	{
+		"id": 3,
+		"name": "Emily Rodriguez",
+		"email": "emily.r@example.com",
+		"rating": 5,
+		"review": "Outstanding service! Their deep cleaning service is worth every penny. Perfect for preparing properties for new tenants.",
+		"approved": true,
+		"created_at": "2025-12-24T23:16:33.768Z"
+	},
+	{
+		"id": 4,
+		"name": "Abdenassar amimi",
+		"email": "abdenassaramimi@gmail.com",
+		"rating": 5,
+		"review": "Hello world! \nThis is very great. I like this",
+		"approved": false,
+		"created_at": "2025-12-24T23:16:33.793Z"
+	},
+	{
+		"id": 5,
+		"name": "abdenassar amimi",
+		"email": "abdenassaramimi@gmail.com",
+		"rating": 5,
+		"review": "Failed to submit review. Please try again.",
+		"approved": true,
+		"created_at": "2025-12-24T23:17:18.704Z"
+	}
+]
