@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
-import './globals.css';
+import '../globals.css';
 import { Footer, Header } from '@/components';
 import { StructuredData, createOrganizationStructuredData, createLocalBusinessStructuredData } from '@/lib/seo';
+import { ReactElement } from 'react';
+import { I18nProviderClient } from '@/lib/i18n/client';
 
 const poppins = Poppins({
 	variable: '--font-poppins',
@@ -74,11 +76,15 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function RootLayout({
+export default async function RootLayout({
+	params,
 	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
+}: {
+	params: Promise<{ locale: string }>;
+	children: ReactElement;
+}) {
+	const { locale } = await params;
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
@@ -89,15 +95,17 @@ export default function RootLayout({
 				<meta name="theme-color" content="#4e95f2" />
 			</head>
 			<body className={`${poppins.variable} antialiased bg-background`}>
-				{/* Structured Data */}
-				<StructuredData data={createOrganizationStructuredData()} />
-				<StructuredData data={createLocalBusinessStructuredData()} />
+				<I18nProviderClient locale={locale}>
+					{/* Structured Data */}
+					<StructuredData data={createOrganizationStructuredData()} />
+					<StructuredData data={createLocalBusinessStructuredData()} />
 
-				<div className="container flex flex-col gap-4">
-					<Header />
-					<main>{children}</main>
-					<Footer />
-				</div>
+					<div className="container flex flex-col gap-4">
+						<Header />
+						<main>{children}</main>
+						<Footer />
+					</div>
+				</I18nProviderClient>
 			</body>
 		</html>
 	);
