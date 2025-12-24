@@ -3,7 +3,7 @@ import { Poppins } from 'next/font/google';
 import '../globals.css';
 import { Footer, Header } from '@/components';
 import { StructuredData, createOrganizationStructuredData, createLocalBusinessStructuredData } from '@/lib/seo';
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 import { I18nProviderClient } from '@/lib/i18n/client';
 
 const poppins = Poppins({
@@ -81,7 +81,7 @@ export default async function RootLayout({
 	children,
 }: {
 	params: Promise<{ locale: string }>;
-	children: ReactElement;
+	children: ReactNode;
 }) {
 	const { locale } = await params;
 
