@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { User02FreeIcons, LockFreeIcons } from '@hugeicons/core-free-icons';
 
 export default function AdminLoginPage() {
 	const router = useRouter();
+	const params = useParams();
+	const locale = (params?.locale as string) || 'en';
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
@@ -28,7 +30,7 @@ export default function AdminLoginPage() {
 			const data = await response.json();
 
 			if (response.ok) {
-				router.push('/admin');
+				router.push(`/${locale}/admin`);
 				router.refresh();
 			} else {
 				setError(data.error || 'Login failed');
@@ -42,16 +44,6 @@ export default function AdminLoginPage() {
 
 	return (
 		<div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--background)' }}>
-			{/* Header */}
-			<header className="border-b border-secondary/20 bg-background-secondary">
-				<div className="container py-4">
-					<Link href="/" className="text-2xl font-bold">
-						Sandra <span style={{ color: 'var(--primary)' }}>Cleaning</span>
-					</Link>
-				</div>
-			</header>
-
-			{/* Main Content */}
 			<main className="flex-1 flex items-center justify-center p-4">
 				<div className="w-full max-w-md">
 					<div className="bg-background-secondary rounded-2xl p-6 md:p-8 border border-secondary/20 shadow-lg">
@@ -77,7 +69,11 @@ export default function AdminLoginPage() {
 									Username
 								</label>
 								<div className="relative">
-									<HugeiconsIcon icon={User02FreeIcons} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text)', opacity: 0.4 }} />
+									<HugeiconsIcon
+										icon={User02FreeIcons}
+										className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
+										style={{ color: 'var(--text)', opacity: 0.4 }}
+									/>
 									<input
 										id="username"
 										type="text"
@@ -97,7 +93,11 @@ export default function AdminLoginPage() {
 									Password
 								</label>
 								<div className="relative">
-									<HugeiconsIcon icon={LockFreeIcons} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text)', opacity: 0.4 }} />
+									<HugeiconsIcon
+										icon={LockFreeIcons}
+										className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
+										style={{ color: 'var(--text)', opacity: 0.4 }}
+									/>
 									<input
 										id="password"
 										type="password"
@@ -124,7 +124,8 @@ export default function AdminLoginPage() {
 							{/* Default Credentials Note */}
 							<div className="text-center pt-4 border-t border-secondary/20">
 								<p className="text-xs" style={{ color: 'var(--text)', opacity: 0.6 }}>
-									Default credentials: <span className="font-semibold">admin</span> / <span className="font-semibold">admin123</span>
+									Default credentials: <span className="font-semibold">admin</span> /{' '}
+									<span className="font-semibold">admin123</span>
 								</p>
 							</div>
 						</form>
@@ -132,11 +133,7 @@ export default function AdminLoginPage() {
 
 					{/* Back to Home Link */}
 					<div className="text-center mt-6">
-						<Link
-							href="/"
-							className="text-sm hover:underline"
-							style={{ color: 'var(--primary)' }}
-						>
+						<Link href="/" className="text-sm hover:underline" style={{ color: 'var(--primary)' }}>
 							← Back to website
 						</Link>
 					</div>

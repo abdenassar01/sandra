@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
 interface FAQ {
 	id: number;
@@ -11,6 +12,8 @@ interface FAQ {
 }
 
 export default function AdminFAQsPage() {
+	const params = useParams();
+	const locale = (params?.locale as string) || 'en';
 	const [faqs, setFaqs] = useState<FAQ[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [showForm, setShowForm] = useState(false);
@@ -37,7 +40,7 @@ export default function AdminFAQsPage() {
 				setFaqs(data.faqs);
 			} else {
 				if (response.status === 401) {
-					window.location.href = '/admin/login';
+					window.location.href = `/${locale}/admin/login`;
 				}
 			}
 		} catch (err) {
@@ -75,9 +78,7 @@ export default function AdminFAQsPage() {
 		setSaving(true);
 
 		try {
-			const url = editingId
-				? `/api/admin/faqs/${editingId}`
-				: '/api/admin/faqs';
+			const url = editingId ? `/api/admin/faqs/${editingId}` : '/api/admin/faqs';
 			const method = editingId ? 'PUT' : 'POST';
 
 			const response = await fetch(url, {
@@ -153,7 +154,7 @@ export default function AdminFAQsPage() {
 
 				{showForm && (
 					<div
-						className="mb-6 rounded-2xl p-6 border"
+						className="mb-6 rounded-2xl p-6 border border-primary/10"
 						style={{ backgroundColor: 'var(--background-secondary)', borderColor: 'var(--secondary/20)' }}
 					>
 						<h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>
@@ -257,8 +258,7 @@ export default function AdminFAQsPage() {
 								<button
 									type="button"
 									onClick={resetForm}
-									className="px-6 py-3 rounded-xl text-sm font-semibold border transition-all hover:scale-105"
-									style={{ borderColor: 'var(--secondary/20)', color: 'var(--text)' }}
+									className="px-6 py-3 rounded-xl text-sm font-semibold border transition-all hover:scale-105 bg-teal-400/10 text-teal-400"
 									disabled={saving}
 								>
 									Cancel
@@ -266,8 +266,7 @@ export default function AdminFAQsPage() {
 								<button
 									type="submit"
 									disabled={saving}
-									className="px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105 disabled:opacity-50"
-									style={{ backgroundColor: 'var(--primary)' }}
+									className="px-6 py-3 rounded-xl text-sm font-semibold text-primary bg-primary/10 transition-all hover:scale-105 disabled:opacity-50"
 								>
 									{saving ? 'Saving...' : editingId ? 'Update FAQ' : 'Create FAQ'}
 								</button>
@@ -276,17 +275,13 @@ export default function AdminFAQsPage() {
 					</div>
 				)}
 
-				{/* FAQs List */}
-				<div
-					className="rounded-2xl border overflow-hidden"
-					style={{ backgroundColor: 'var(--background-secondary)', borderColor: 'var(--secondary/20)' }}
-				>
+				<div className="rounded-2xl border overflow-hidden border-primary/10 bg-background-secondary">
 					{faqs.length === 0 ? (
 						<div className="px-4 py-12 text-center" style={{ color: 'var(--text)', opacity: 0.6 }}>
 							No FAQs found. Create your first FAQ!
 						</div>
 					) : (
-						<div className="divide-y" style={{ borderColor: 'var(--secondary/20)' }}>
+						<div className="divide-y divide-primary/10">
 							{faqs.map((faq) => (
 								<div key={faq.id} className="p-4 sm:px-6">
 									<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -295,10 +290,16 @@ export default function AdminFAQsPage() {
 												<p className="text-sm font-semibold" style={{ color: 'var(--primary)' }}>
 													{faq.question}
 												</p>
-												<span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--secondary)', color: 'white' }}>
+												<span
+													className="px-2 py-0.5 rounded-full text-xs font-semibold"
+													style={{ backgroundColor: 'var(--secondary)', color: 'white' }}
+												>
 													{faq.locale}
 												</span>
-												<span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--secondary/20)', color: 'var(--text)' }}>
+												<span
+													className="px-2 py-0.5 rounded-full text-xs font-semibold"
+													style={{ backgroundColor: 'var(--secondary/20)', color: 'var(--text)' }}
+												>
 													Order: {faq.sort_order}
 												</span>
 											</div>

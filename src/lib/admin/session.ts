@@ -22,7 +22,7 @@ export async function createSession(userId: number): Promise<string> {
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'lax',
 		expires: new Date(expiresAt),
-		path: '/admin',
+		path: '/',
 	});
 
 	return sessionId;

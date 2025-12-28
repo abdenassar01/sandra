@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 
 interface Review {
@@ -14,6 +15,8 @@ interface Review {
 }
 
 export default function AdminReviewsPage() {
+	const params = useParams();
+	const locale = (params?.locale as string) || 'en';
 	const [reviews, setReviews] = useState<Review[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('all');
@@ -30,7 +33,7 @@ export default function AdminReviewsPage() {
 				setReviews(data.reviews);
 			} else {
 				if (response.status === 401) {
-					window.location.href = '/admin/login';
+					window.location.href = `/${locale}/admin/login`;
 				}
 			}
 		} catch (error) {
@@ -48,9 +51,7 @@ export default function AdminReviewsPage() {
 				body: JSON.stringify({ action: 'approve' }),
 			});
 			if (response.ok) {
-				setReviews(
-					reviews.map((r) => (r.id === id ? { ...r, approved: 1 } : r))
-				);
+				setReviews(reviews.map((r) => (r.id === id ? { ...r, approved: 1 } : r)));
 			}
 		} catch (error) {
 			console.error('Failed to approve review:', error);
@@ -100,7 +101,10 @@ export default function AdminReviewsPage() {
 					</h1>
 					<p className="mt-2 text-sm" style={{ color: 'var(--text)', opacity: 0.7 }}>
 						{pendingCount > 0 && (
-							<span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--warn)', color: 'white' }}>
+							<span
+								className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+								style={{ backgroundColor: 'var(--warn)', color: 'white' }}
+							>
 								{pendingCount} pending approval
 							</span>
 						)}
@@ -149,7 +153,7 @@ export default function AdminReviewsPage() {
 
 				{/* Reviews List */}
 				<div
-					className="rounded-2xl border overflow-hidden"
+					className="rounded-2xl border-primary/10 border overflow-hidden"
 					style={{ backgroundColor: 'var(--background-secondary)', borderColor: 'var(--secondary/20)' }}
 				>
 					{filteredReviews.length === 0 ? (
@@ -157,7 +161,7 @@ export default function AdminReviewsPage() {
 							No reviews found.
 						</div>
 					) : (
-						<div className="divide-y" style={{ borderColor: 'var(--secondary/20)' }}>
+						<div className="divide-y divide-primary/10">
 							{filteredReviews.map((review) => (
 								<div key={review.id} className="p-4 sm:px-6">
 									<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -166,15 +170,24 @@ export default function AdminReviewsPage() {
 												<p className="text-sm font-semibold" style={{ color: 'var(--primary)' }}>
 													{review.name}
 												</p>
-												<span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--primary)', color: 'white' }}>
+												<span
+													className="px-2 py-0.5 rounded-full text-xs font-semibold"
+													style={{ backgroundColor: 'var(--primary)', color: 'white' }}
+												>
 													{review.rating} / 5
 												</span>
 												{review.approved === 0 ? (
-													<span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--secondary/20)', color: 'var(--text)' }}>
+													<span
+														className="px-2 py-0.5 rounded-full text-xs font-semibold"
+														style={{ backgroundColor: 'var(--secondary/20)', color: 'var(--text)' }}
+													>
 														Pending
 													</span>
 												) : (
-													<span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--success)', color: 'white' }}>
+													<span
+														className="px-2 py-0.5 rounded-full text-xs font-semibold"
+														style={{ backgroundColor: 'var(--success)', color: 'white' }}
+													>
 														Approved
 													</span>
 												)}

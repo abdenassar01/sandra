@@ -2,15 +2,16 @@ import { redirect } from 'next/navigation';
 import { getSession } from './session';
 import { adminDb } from '@/lib/db';
 
-export async function requireAuth() {
+export async function requireAuth(locale?: string) {
 	const session = await getSession();
 	if (!session) {
-		redirect('/admin/login');
+		// Redirect to locale-based login or root
+		redirect(locale ? `/${locale}/admin/login` : '/');
 	}
 
 	const admin = adminDb.getAdminById(session.userId);
 	if (!admin) {
-		redirect('/admin/login');
+		redirect(locale ? `/${locale}/admin/login` : '/');
 	}
 
 	return { admin };

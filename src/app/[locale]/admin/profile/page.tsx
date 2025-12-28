@@ -1,12 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { HugeiconsIcon } from '@hugeicons/react';
-import {
-	User02FreeIcons,
-	LockFreeIcons,
-} from '@hugeicons/core-free-icons';
-import { adminDb } from '@/lib/db';
+import { User02FreeIcons, LockFreeIcons } from '@hugeicons/core-free-icons';
 
 interface AdminUser {
 	id: number;
@@ -14,13 +11,14 @@ interface AdminUser {
 }
 
 export default function AdminProfilePage() {
+	const params = useParams();
+	const locale = (params?.locale as string) || 'en';
 	const [admin, setAdmin] = useState<AdminUser | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 
-	// Form state
 	const [username, setUsername] = useState('');
 	const [currentPassword, setCurrentPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
@@ -39,7 +37,7 @@ export default function AdminProfilePage() {
 				setUsername(data.admin.username);
 			} else {
 				if (response.status === 401) {
-					window.location.href = '/admin/login';
+					window.location.href = `/${locale}/admin/login`;
 				}
 			}
 		} catch (err) {
@@ -106,7 +104,7 @@ export default function AdminProfilePage() {
 
 	if (loading) {
 		return (
-			<div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+			<div className="container py-6 sm:px-6 lg:px-8">
 				<div className="px-4 py-6 sm:px-0">
 					<div className="text-center">Loading...</div>
 				</div>
@@ -115,7 +113,7 @@ export default function AdminProfilePage() {
 	}
 
 	return (
-		<div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+		<div className="container py-6 px-4 md:px-6">
 			<div className="px-4 py-6 sm:px-0">
 				<div className="mb-6">
 					<h1 className="text-3xl font-bold" style={{ color: 'var(--text)' }}>
@@ -127,28 +125,15 @@ export default function AdminProfilePage() {
 				</div>
 
 				<div className="max-w-2xl">
-					<div
-						className="rounded-2xl p-6 md:p-8 border"
-						style={{ backgroundColor: 'var(--background-secondary)', borderColor: 'var(--secondary/20)' }}
-					>
+					<div className="rounded-2xl p-6 md:p-8 border bg-background-secondary border-primary/10">
 						<form onSubmit={handleSubmit} className="space-y-6">
 							{error && (
-								<div
-									className="rounded-xl p-4 text-sm"
-									style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}
-								>
+								<div className="rounded-xl p-4 text-sm text-error bg" style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}>
 									{error}
 								</div>
 							)}
 
-							{success && (
-								<div
-									className="rounded-xl p-4 text-sm"
-									style={{ backgroundColor: '#dcfce7', color: '#166534' }}
-								>
-									{success}
-								</div>
-							)}
+							{success && <div className="rounded-xl p-4 text-sm text-success bg-success/10">{success}</div>}
 
 							{/* Username Section */}
 							<div>
@@ -171,8 +156,7 @@ export default function AdminProfilePage() {
 											value={username}
 											onChange={(e) => setUsername(e.target.value)}
 											placeholder="Enter new username"
-											className="w-full pl-10 pr-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-											style={{ borderColor: 'var(--secondary/20)' }}
+											className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
 											disabled={saving}
 										/>
 									</div>
@@ -180,14 +164,18 @@ export default function AdminProfilePage() {
 							</div>
 
 							{/* Password Section */}
-							<div className="pt-6 border-t" style={{ borderColor: 'var(--secondary/20)' }}>
+							<div className="pt-6 border-t border-primary/10">
 								<h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>
 									Update Password
 								</h3>
 								<div className="space-y-4">
 									{/* Current Password */}
 									<div>
-										<label htmlFor="currentPassword" className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>
+										<label
+											htmlFor="currentPassword"
+											className="block text-sm font-medium mb-2"
+											style={{ color: 'var(--text)' }}
+										>
 											Current Password
 											{newPassword && <span className="text-red-500 ml-1">*</span>}
 										</label>
@@ -203,8 +191,7 @@ export default function AdminProfilePage() {
 												value={currentPassword}
 												onChange={(e) => setCurrentPassword(e.target.value)}
 												placeholder="Enter current password"
-												className="w-full pl-10 pr-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-												style={{ borderColor: 'var(--secondary/20)' }}
+												className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
 												disabled={saving}
 											/>
 										</div>
@@ -227,8 +214,7 @@ export default function AdminProfilePage() {
 												value={newPassword}
 												onChange={(e) => setNewPassword(e.target.value)}
 												placeholder="Enter new password (min. 6 characters)"
-												className="w-full pl-10 pr-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-												style={{ borderColor: 'var(--secondary/20)' }}
+												className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
 												disabled={saving}
 											/>
 										</div>
@@ -236,7 +222,11 @@ export default function AdminProfilePage() {
 
 									{/* Confirm Password */}
 									<div>
-										<label htmlFor="confirmPassword" className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>
+										<label
+											htmlFor="confirmPassword"
+											className="block text-sm font-medium mb-2"
+											style={{ color: 'var(--text)' }}
+										>
 											Confirm New Password
 										</label>
 										<div className="relative">
@@ -251,8 +241,7 @@ export default function AdminProfilePage() {
 												value={confirmPassword}
 												onChange={(e) => setConfirmPassword(e.target.value)}
 												placeholder="Confirm new password"
-												className="w-full pl-10 pr-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-												style={{ borderColor: 'var(--secondary/20)' }}
+												className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
 												disabled={saving}
 											/>
 										</div>
@@ -265,8 +254,7 @@ export default function AdminProfilePage() {
 								<button
 									type="submit"
 									disabled={saving}
-									className="w-full inline-flex items-center justify-center gap-2 rounded-xl text-sm text-white transition-all hover:scale-105 p-3 px-8 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-									style={{ backgroundColor: 'var(--primary)' }}
+									className="w-full hover:bg-primary/30 border inline-flex items-center justify-center gap-2 rounded-xl text-sm transition-all p-3 px-8 font-semibold disabled:opacity-50 disabled:cursor-not-allowed bg-primary/10 text-primary"
 								>
 									{saving ? 'Saving...' : 'Save Changes'}
 								</button>
