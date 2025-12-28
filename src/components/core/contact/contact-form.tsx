@@ -13,7 +13,7 @@ import {
 
 export function ContactForm() {
 	return (
-		<div className="bg-background-secondary rounded-2xl p-6 md:p-8 border border-secondary/20">
+		<div className="bg-background-secondary rounded-2xl p-3 md:p-8 border border-secondary/20">
 			<h2 className="text-2xl md:text-3xl font-bold mb-2">
 				Send Us a <span className="text-primary">Message</span>
 			</h2>
@@ -61,7 +61,10 @@ export function ContactForm() {
 							Phone Number
 						</label>
 						<div className="relative">
-							<HugeiconsIcon icon={PhoneArrowUpFreeIcons} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/40" />
+							<HugeiconsIcon
+								icon={PhoneArrowUpFreeIcons}
+								className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/40"
+							/>
 							<input
 								type="tel"
 								id="phone"
@@ -77,7 +80,10 @@ export function ContactForm() {
 							Service Type
 						</label>
 						<div className="relative">
-							<HugeiconsIcon icon={Building04FreeIcons} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/40" />
+							<HugeiconsIcon
+								icon={Building04FreeIcons}
+								className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/40"
+							/>
 							<select
 								id="service"
 								className="w-full pl-10 pr-4 py-3 rounded-xl border border-secondary/20 bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm transition-all appearance-none"

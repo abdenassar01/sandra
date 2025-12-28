@@ -28,9 +28,9 @@ export default function ContactUs() {
 				])}
 			/>
 
-			<div className="flex flex-col gap-4 container">
+			<div className="flex flex-col gap-2 container">
 				{/* Header */}
-				<div className="text-center py-8 md:py-12">
+				<div className="text-center py-4 md:py-8">
 					<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
 						Contact <span className="text-primary">Us</span>
 					</h1>
@@ -40,14 +40,14 @@ export default function ContactUs() {
 				</div>
 
 				{/* Contact Info Cards */}
-				<section className="py-4 md:py-8">
+				<section className="py-4 md:py-4">
 					<div className="">
 						<ContactInfo />
 					</div>
 				</section>
 
 				{/* Contact Form Section */}
-				<section className="py-8 md:py-12 ">
+				<section className="py-3 ">
 					<div className="">
 						<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 							<div className="lg:col-span-2">
