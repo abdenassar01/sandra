@@ -8,35 +8,38 @@ import {
 	Location01FreeIcons,
 	ClockFreeIcons,
 } from '@hugeicons/core-free-icons';
-
-const contactItems = [
-	{
-		icon: Call02FreeIcons,
-		title: 'Phone',
-		value: '+1 (555) 123-4567',
-		description: 'Mon-Fri from 8am to 6pm.',
-	},
-	{
-		icon: Mail01FreeIcons,
-		title: 'Email',
-		value: 'info@sandracleaning.com',
-		description: 'We respond within 24 hours.',
-	},
-	{
-		icon: Location01FreeIcons,
-		title: 'Address',
-		value: '123 Clean Street, City, ST 12345',
-		description: 'Visit our office for consultation.',
-	},
-	{
-		icon: ClockFreeIcons,
-		title: 'Working Hours',
-		value: 'Mon - Sat: 8:00 AM - 6:00 PM',
-		description: 'Sunday: Closed',
-	},
-];
+import { useI18n } from '@/lib/i18n/client';
 
 export function ContactInfo() {
+	const t = useI18n();
+
+	const contactItems = [
+		{
+			icon: Call02FreeIcons,
+			title: t('contact.info.phone'),
+			value: t('contact.info.phoneValue'),
+			description: t('contact.info.phoneDescription'),
+		},
+		{
+			icon: Mail01FreeIcons,
+			title: t('contact.info.email'),
+			value: t('contact.info.emailValue'),
+			description: t('contact.info.emailDescription'),
+		},
+		{
+			icon: Location01FreeIcons,
+			title: t('contact.info.address'),
+			value: t('contact.info.addressValue'),
+			description: t('contact.info.addressDescription'),
+		},
+		{
+			icon: ClockFreeIcons,
+			title: t('contact.info.workingHours'),
+			value: t('contact.info.workingHoursValue'),
+			description: t('contact.info.sundayClosed'),
+		},
+	];
+
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 			{contactItems.map((item) => (

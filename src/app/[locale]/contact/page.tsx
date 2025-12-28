@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ContactForm, ContactInfo } from '@/components/core/contact';
 import { ReviewForm } from '@/components/common/review-form';
 import { StructuredData, createBreadcrumbStructuredData } from '@/lib/seo';
+import { getI18n } from '@/lib/i18n/server';
 
 export const metadata: Metadata = {
 	title: 'Contact Us',
@@ -17,7 +18,10 @@ export const metadata: Metadata = {
 	],
 };
 
-export default function ContactUs() {
+export default async function ContactUs({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getI18n();
+
 	return (
 		<>
 			{/* Structured Data */}
@@ -32,11 +36,10 @@ export default function ContactUs() {
 				{/* Header */}
 				<div className="text-center py-4 md:py-8">
 					<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-						Contact <span className="text-primary">Us</span>
+						{t('contact.title').split(' ')[0]}{' '}
+						<span className="text-primary">{t('contact.title').split(' ').slice(1).join(' ')}</span>
 					</h1>
-					<p className="text-text/70 max-w-2xl mx-auto">
-						Get in touch with us for a free quote or to schedule your first cleaning. We're here to help!
-					</p>
+					<p className="text-text/70 max-w-2xl mx-auto">{t('contact.subtitle')}</p>
 				</div>
 
 				{/* Contact Info Cards */}
@@ -57,40 +60,41 @@ export default function ContactUs() {
 							{/* Side Info Card */}
 							<div className="bg-background-secondary rounded-2xl p-6 border border-secondary/20">
 								<h3 className="text-xl font-semibold text-text mb-4">
-									Why Choose <span className="text-primary">Sandra Cleaning?</span>
+									{t('contact.whyChoose.title').split(' ').slice(0, 2).join(' ')}{' '}
+									<span className="text-primary">{t('contact.whyChoose.title').split(' ').slice(2).join(' ')}</span>
 								</h3>
 								<ul className="space-y-3 text-sm text-text/70">
 									<li className="flex items-start gap-2">
-										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-										<span>Free quotes with no obligation</span>
+										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 shrink-0"></div>
+										<span>{t('contact.whyChoose.reason1')}</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-										<span>Flexible scheduling to fit your needs</span>
+										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 shrink-0"></div>
+										<span>{t('contact.whyChoose.reason2')}</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-										<span>Fully insured and background-checked cleaners</span>
+										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 shrink-0"></div>
+										<span>{t('contact.whyChoose.reason3')}</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-										<span>Eco-friendly cleaning products</span>
+										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 shrink-0"></div>
+										<span>{t('contact.whyChoose.reason4')}</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-										<span>100% satisfaction guarantee</span>
+										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 shrink-0"></div>
+										<span>{t('contact.whyChoose.reason5')}</span>
 									</li>
 									<li className="flex items-start gap-2">
-										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-										<span>Emergency cleaning available</span>
+										<div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 shrink-0"></div>
+										<span>{t('contact.whyChoose.reason6')}</span>
 									</li>
 								</ul>
 
 								<div className="mt-6 p-4 bg-primary/10 rounded-xl">
-									<p className="text-sm text-text font-medium mb-1">Need immediate assistance?</p>
-									<p className="text-xs text-text/60 mb-3">Call us directly for urgent cleaning needs.</p>
+									<p className="text-sm text-text font-medium mb-1">{t('contact.whyChoose.needHelp')}</p>
+									<p className="text-xs text-text/60 mb-3">{t('contact.whyChoose.needHelpDescription')}</p>
 									<a href="tel:+15551234567" className="text-primary font-semibold text-sm hover:underline">
-										+1 (555) 123-4567
+										{t('contact.info.phoneValue')}
 									</a>
 								</div>
 							</div>

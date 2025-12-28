@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useForm } from '@tanstack/react-form';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { User02FreeIcons, LockFreeIcons } from '@hugeicons/core-free-icons';
 
@@ -10,99 +12,121 @@ interface AdminUser {
 	username: string;
 }
 
+interface ProfileResponse {
+	admin: AdminUser;
+}
+
+interface UpdateProfileResponse {
+	success: boolean;
+	admin?: AdminUser;
+	error?: string;
+}
+
+async function fetchProfile(): Promise<AdminUser> {
+	const response = await fetch('/api/admin/profile');
+	if (!response.ok) {
+		if (response.status === 401) {
+			throw new Error('UNAUTHORIZED');
+		}
+		throw new Error('Failed to fetch profile');
+	}
+	const data: ProfileResponse = await response.json();
+	return data.admin;
+}
+
+async function updateProfile(data: {
+	username: string;
+	currentPassword: string;
+	newPassword?: string;
+}): Promise<UpdateProfileResponse> {
+	const response = await fetch('/api/admin/profile', {
+		method: 'PUT',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(data),
+	});
+
+	const result: UpdateProfileResponse = await response.json();
+	if (!response.ok) {
+		return { success: false, error: result.error || 'Failed to update profile' };
+	}
+	return { success: true, admin: result.admin };
+}
+
 export default function AdminProfilePage() {
-	const params = useParams();
-	const locale = (params?.locale as string) || 'en';
-	const [admin, setAdmin] = useState<AdminUser | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [saving, setSaving] = useState(false);
-	const [error, setError] = useState('');
-	const [success, setSuccess] = useState('');
+	const router = useRouter();
+	const queryClient = useQueryClient();
 
-	const [username, setUsername] = useState('');
-	const [currentPassword, setCurrentPassword] = useState('');
-	const [newPassword, setNewPassword] = useState('');
-	const [confirmPassword, setConfirmPassword] = useState('');
+	const { data: admin, isLoading } = useQuery<AdminUser>({
+		queryKey: ['admin-profile'],
+		queryFn: fetchProfile,
+		retry: false,
+		throwOnError: (error) => {
+			if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+				router.push('/admin/login');
+				return false;
+			}
+			return true;
+		},
+	});
 
-	useEffect(() => {
-		fetchProfile();
-	}, []);
+	const mutation = useMutation({
+		mutationFn: updateProfile,
+		onSuccess: () => {
+			// Invalidate profile query to refetch
+			queryClient.invalidateQueries({ queryKey: ['admin-profile'] });
+		},
+	});
 
-	const fetchProfile = async () => {
-		try {
-			const response = await fetch('/api/admin/profile');
-			if (response.ok) {
-				const data = await response.json();
-				setAdmin(data.admin);
-				setUsername(data.admin.username);
-			} else {
-				if (response.status === 401) {
-					window.location.href = `/${locale}/admin/login`;
+	const form = useForm({
+		defaultValues: {
+			username: '',
+			currentPassword: '',
+			newPassword: '',
+			confirmPassword: '',
+		},
+		onSubmit: async ({ value }) => {
+			// Validate password fields
+			if (value.newPassword || value.confirmPassword) {
+				if (!value.currentPassword) {
+					throw new Error('Current password is required to change password');
+				}
+				if (value.newPassword !== value.confirmPassword) {
+					throw new Error('New passwords do not match');
+				}
+				if (value.newPassword.length < 6) {
+					throw new Error('New password must be at least 6 characters long');
 				}
 			}
-		} catch (err) {
-			setError('Failed to load profile');
-		} finally {
-			setLoading(false);
-		}
-	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setError('');
-		setSuccess('');
-		setSaving(true);
-
-		// Validate password fields
-		if (newPassword || confirmPassword) {
-			if (!currentPassword) {
-				setError('Current password is required to change password');
-				setSaving(false);
-				return;
-			}
-			if (newPassword !== confirmPassword) {
-				setError('New passwords do not match');
-				setSaving(false);
-				return;
-			}
-			if (newPassword.length < 6) {
-				setError('New password must be at least 6 characters long');
-				setSaving(false);
-				return;
-			}
-		}
-
-		try {
-			const response = await fetch('/api/admin/profile', {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					username,
-					currentPassword,
-					newPassword: newPassword || undefined,
-				}),
+			const result = await mutation.mutateAsync({
+				username: value.username,
+				currentPassword: value.currentPassword,
+				newPassword: value.newPassword || undefined,
 			});
 
-			const data = await response.json();
-
-			if (response.ok) {
-				setAdmin(data.admin);
-				setSuccess('Profile updated successfully!');
-				// Clear password fields
-				setCurrentPassword('');
-				setNewPassword('');
-				setConfirmPassword('');
-			} else {
-				setError(data.error || 'Failed to update profile');
+			if (!result.success) {
+				throw new Error(result.error || 'Failed to update profile');
 			}
-		} catch (err) {
-			setError('An error occurred. Please try again.');
-		} finally {
-			setSaving(false);
-		}
-	};
+		},
+	});
 
-	if (loading) {
+	// Update form when admin data loads
+	useEffect(() => {
+		if (admin) {
+			form.setFieldValue('username', admin.username);
+		}
+	}, [admin, form]);
+
+	// Clear password fields on successful update
+	useEffect(() => {
+		if (mutation.data?.success) {
+			form.setFieldValue('currentPassword', '');
+			form.setFieldValue('newPassword', '');
+			form.setFieldValue('confirmPassword', '');
+		}
+	}, [mutation.data, form]);
+
+	if (isLoading) {
 		return (
 			<div className="container py-6 sm:px-6 lg:px-8">
 				<div className="px-4 py-6 sm:px-0">
@@ -126,14 +150,36 @@ export default function AdminProfilePage() {
 
 				<div className="max-w-2xl">
 					<div className="rounded-2xl p-6 md:p-8 border bg-background-secondary border-primary/10">
-						<form onSubmit={handleSubmit} className="space-y-6">
-							{error && (
-								<div className="rounded-xl p-4 text-sm text-error bg" style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}>
-									{error}
+						<form
+							onSubmit={(e) => {
+								e.preventDefault();
+								form.handleSubmit();
+							}}
+							className="space-y-6"
+						>
+							{(form.state.errors as any)?.confirmPassword && (
+								<div
+									className="rounded-xl p-4 text-sm bg"
+									style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}
+								>
+									{(form.state.errors as any).confirmPassword}
 								</div>
 							)}
 
-							{success && <div className="rounded-xl p-4 text-sm text-success bg-success/10">{success}</div>}
+							{mutation.error && (
+								<div
+									className="rounded-xl p-4 text-sm bg"
+									style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}
+								>
+									{mutation.error instanceof Error ? mutation.error.message : 'An error occurred'}
+								</div>
+							)}
+
+							{mutation.data?.success && (
+								<div className="rounded-xl p-4 text-sm text-success bg-success/10">
+									Profile updated successfully!
+								</div>
+							)}
 
 							{/* Username Section */}
 							<div>
@@ -150,14 +196,20 @@ export default function AdminProfilePage() {
 											className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
 											style={{ color: 'var(--text)', opacity: 0.4 }}
 										/>
-										<input
-											id="username"
-											type="text"
-											value={username}
-											onChange={(e) => setUsername(e.target.value)}
-											placeholder="Enter new username"
-											className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-											disabled={saving}
+										<form.Field
+											name="username"
+											children={(field) => (
+												<input
+													id="username"
+													name={field.name}
+													value={field.state.value}
+													onBlur={field.handleBlur}
+													onChange={(e) => field.handleChange(e.target.value)}
+													placeholder="Enter new username"
+													className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
+													disabled={mutation.isPending}
+												/>
+											)}
 										/>
 									</div>
 								</div>
@@ -177,7 +229,7 @@ export default function AdminProfilePage() {
 											style={{ color: 'var(--text)' }}
 										>
 											Current Password
-											{newPassword && <span className="text-red-500 ml-1">*</span>}
+											{form.state.values.newPassword && <span className="text-red-500 ml-1">*</span>}
 										</label>
 										<div className="relative">
 											<HugeiconsIcon
@@ -185,14 +237,21 @@ export default function AdminProfilePage() {
 												className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
 												style={{ color: 'var(--text)', opacity: 0.4 }}
 											/>
-											<input
-												id="currentPassword"
-												type="password"
-												value={currentPassword}
-												onChange={(e) => setCurrentPassword(e.target.value)}
-												placeholder="Enter current password"
-												className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-												disabled={saving}
+											<form.Field
+												name="currentPassword"
+												children={(field) => (
+													<input
+														id="currentPassword"
+														type="password"
+														name={field.name}
+														value={field.state.value}
+														onBlur={field.handleBlur}
+														onChange={(e) => field.handleChange(e.target.value)}
+														placeholder="Enter current password"
+														className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
+														disabled={mutation.isPending}
+													/>
+												)}
 											/>
 										</div>
 									</div>
@@ -208,14 +267,21 @@ export default function AdminProfilePage() {
 												className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
 												style={{ color: 'var(--text)', opacity: 0.4 }}
 											/>
-											<input
-												id="newPassword"
-												type="password"
-												value={newPassword}
-												onChange={(e) => setNewPassword(e.target.value)}
-												placeholder="Enter new password (min. 6 characters)"
-												className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-												disabled={saving}
+											<form.Field
+												name="newPassword"
+												children={(field) => (
+													<input
+														id="newPassword"
+														type="password"
+														name={field.name}
+														value={field.state.value}
+														onBlur={field.handleBlur}
+														onChange={(e) => field.handleChange(e.target.value)}
+														placeholder="Enter new password (min. 6 characters)"
+														className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
+														disabled={mutation.isPending}
+													/>
+												)}
 											/>
 										</div>
 									</div>
@@ -235,14 +301,21 @@ export default function AdminProfilePage() {
 												className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
 												style={{ color: 'var(--text)', opacity: 0.4 }}
 											/>
-											<input
-												id="confirmPassword"
-												type="password"
-												value={confirmPassword}
-												onChange={(e) => setConfirmPassword(e.target.value)}
-												placeholder="Confirm new password"
-												className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-												disabled={saving}
+											<form.Field
+												name="confirmPassword"
+												children={(field) => (
+													<input
+														id="confirmPassword"
+														type="password"
+														name={field.name}
+														value={field.state.value}
+														onBlur={field.handleBlur}
+														onChange={(e) => field.handleChange(e.target.value)}
+														placeholder="Confirm new password"
+														className="w-full pl-10 pr-4 py-3 border-secondary/10 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
+														disabled={mutation.isPending}
+													/>
+												)}
 											/>
 										</div>
 									</div>
@@ -253,10 +326,10 @@ export default function AdminProfilePage() {
 							<div className="pt-6">
 								<button
 									type="submit"
-									disabled={saving}
+									disabled={mutation.isPending}
 									className="w-full hover:bg-primary/30 border inline-flex items-center justify-center gap-2 rounded-xl text-sm transition-all p-3 px-8 font-semibold disabled:opacity-50 disabled:cursor-not-allowed bg-primary/10 text-primary"
 								>
-									{saving ? 'Saving...' : 'Save Changes'}
+									{mutation.isPending ? 'Saving...' : 'Save Changes'}
 								</button>
 							</div>
 						</form>

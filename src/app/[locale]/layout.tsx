@@ -5,6 +5,7 @@ import { Footer, Header } from '@/components';
 import { StructuredData, createOrganizationStructuredData, createLocalBusinessStructuredData } from '@/lib/seo';
 import { ReactNode } from 'react';
 import { I18nProviderClient } from '@/lib/i18n/client';
+import { TanStackQueryProvider } from '@/components/providers/tanstack-query-provider';
 
 const poppins = Poppins({
 	variable: '--font-poppins',
@@ -95,17 +96,19 @@ export default async function RootLayout({
 				<meta name="theme-color" content="#4e95f2" />
 			</head>
 			<body className={`${poppins.variable} antialiased bg-background`}>
-				<I18nProviderClient locale={locale}>
-					{/* Structured Data */}
-					<StructuredData data={createOrganizationStructuredData()} />
-					<StructuredData data={createLocalBusinessStructuredData()} />
+				<TanStackQueryProvider>
+					<I18nProviderClient locale={locale}>
+						{/* Structured Data */}
+						<StructuredData data={createOrganizationStructuredData()} />
+						<StructuredData data={createLocalBusinessStructuredData()} />
 
-					<div className="container flex flex-col gap-4">
-						<Header />
-						<main>{children}</main>
-						<Footer />
-					</div>
-				</I18nProviderClient>
+						<div className="container flex flex-col gap-4">
+							<Header />
+							<main>{children}</main>
+							<Footer />
+						</div>
+					</I18nProviderClient>
+				</TanStackQueryProvider>
 			</body>
 		</html>
 	);

@@ -1,8 +1,10 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { QuoteUpFreeIcons, StarFreeIcons, ArrowLeftFreeIcons, ArrowRightFreeIcons } from '@hugeicons/core-free-icons';
+import { QuoteUpFreeIcons, StarFreeIcons, ArrowLeftFreeIcons, ArrowRightFreeIcons, LinkSquare02FreeIcons } from '@hugeicons/core-free-icons';
+import { useI18n } from '@/lib/i18n/client';
 
 interface Review {
 	id: number;
@@ -12,28 +14,28 @@ interface Review {
 	created_at: string;
 }
 
-export function TestimonialsSection() {
-	const [reviews, setReviews] = useState<Review[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [currentIndex, setCurrentIndex] = useState(0);
+interface ReviewResponse {
+	success: boolean;
+	reviews: Review[];
+}
 
-	// Fetch reviews on component mount
-	useEffect(() => {
-		async function fetchReviews() {
-			try {
-				const response = await fetch('/api/reviews');
-				const data = await response.json();
-				if (data.success) {
-					setReviews(data.reviews);
-				}
-			} catch (error) {
-				console.error('Error fetching reviews:', error);
-			} finally {
-				setLoading(false);
-			}
-		}
-		fetchReviews();
-	}, []);
+async function fetchReviews(): Promise<Review[]> {
+	const response = await fetch('/api/reviews');
+	if (!response.ok) {
+		throw new Error('Failed to fetch reviews');
+	}
+	const data: ReviewResponse = await response.json();
+	return data.reviews;
+}
+
+export function TestimonialsSection() {
+	const t = useI18n();
+	const { data: reviews = [], isLoading, error } = useQuery({
+		queryKey: ['reviews'],
+		queryFn: fetchReviews,
+	});
+
+	const [currentIndex, setCurrentIndex] = useState(0);
 
 	// Auto-advance carousel every 5 seconds
 	useEffect(() => {
@@ -62,21 +64,24 @@ export function TestimonialsSection() {
 				{/* Section Header */}
 				<div className="text-center mb-16">
 					<h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-						What Our <span className="text-primary">Clients Say</span>
+						{t('home.testimonials.title').split(' ').slice(0, 3).join(' ')}{' '}
+						<span className="text-primary">
+							{t('home.testimonials.title').split(' ').slice(3).join(' ')}
+						</span>
 					</h2>
 					<p className="text-lg text-text/80 max-w-2xl mx-auto">
-						Don't just take our word for it. Here's what our satisfied customers have to say about our cleaning services.
+						{t('home.testimonials.subtitle')}
 					</p>
 				</div>
 
 				{/* Testimonials Carousel */}
-				{loading ? (
+				{isLoading ? (
 					<div className="bg-background-secondary rounded-2xl p-8 border border-secondary/20 animate-pulse">
 						<div className="h-64 bg-secondary/20 rounded"></div>
 					</div>
-				) : reviews.length === 0 ? (
+				) : error || reviews.length === 0 ? (
 					<div className="text-center py-12 bg-background-secondary rounded-2xl border border-secondary/20">
-						<p className="text-text/60">No reviews yet. Be the first to leave one!</p>
+						<p className="text-text/60">{t('home.testimonials.noReviews')}</p>
 					</div>
 				) : (
 					<div className="relative max-w-4xl mx-auto">
@@ -162,35 +167,37 @@ export function TestimonialsSection() {
 				<div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 					<div className="bg-black rounded-3xl p-8 md:p-12 text-center">
 						<h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
-							Ready to Experience <span className="text-primary">Professional Cleaning?</span>
+							{t('home.testimonials.ctaTitle').split(' ')[0]}{' '}
+							{t('home.testimonials.ctaTitle').split(' ').slice(1, 3).join(' ')}{' '}
+							<span className="text-primary">
+								{t('home.testimonials.ctaTitle').split(' ').slice(3).join(' ')}
+							</span>
 						</h3>
-						<p className="text-white/80 mb-6 max-w-xl mx-auto">
-							Join our satisfied customers and discover why Sandra Cleaning is the trusted choice for professional cleaning
-							services.
-						</p>
+						<p className="text-white/80 mb-6 max-w-xl mx-auto">{t('home.testimonials.ctaDescription')}</p>
 						<a
 							href="/contact"
 							className="inline-flex items-center gap-2 rounded-xl text-sm text-black transition-all hover:scale-105 bg-primary hover:bg-primary/90 p-3 px-8 font-semibold"
 						>
-							Get Started Today
+							{t('home.testimonials.getStarted')}
 						</a>
 					</div>
 
 					<div className="flex justify-center">
 						<div className="w-full max-w-md">
 							<h3 className="text-xl font-bold text-text mb-4 text-center">
-								Leave Your <span className="text-primary">Review</span>
+								{t('home.testimonials.leaveReview').split(' ')[0]}{' '}
+								<span className="text-primary">
+									{t('home.testimonials.leaveReview').split(' ').slice(1).join(' ')}
+								</span>
 							</h3>
 							<div className="bg-background-secondary rounded-2xl p-6 border border-secondary/20">
 								<a
 									href="/contact#review"
 									className="block w-full text-center inline-flex items-center justify-center gap-2 rounded-xl text-sm text-white transition-all hover:scale-105 bg-primary hover:bg-primary/90 p-3 px-8 font-semibold"
 								>
-									Write a Review
+									{t('home.testimonials.writeReview')}
 								</a>
-								<p className="text-xs text-text/60 text-center mt-3">
-									Share your experience with our services
-								</p>
+								<p className="text-xs text-text/60 text-center mt-3">{t('home.testimonials.writeReviewDescription')}</p>
 							</div>
 						</div>
 					</div>

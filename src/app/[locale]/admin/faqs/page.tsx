@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useForm } from '@tanstack/react-form';
 
 interface FAQ {
 	id: number;
@@ -11,114 +13,175 @@ interface FAQ {
 	sort_order: number;
 }
 
-export default function AdminFAQsPage() {
-	const params = useParams();
-	const locale = (params?.locale as string) || 'en';
-	const [faqs, setFaqs] = useState<FAQ[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [showForm, setShowForm] = useState(false);
-	const [editingId, setEditingId] = useState<number | null>(null);
-	const [error, setError] = useState('');
-	const [success, setSuccess] = useState('');
-	const [saving, setSaving] = useState(false);
-	const [formData, setFormData] = useState({
-		question: '',
-		answer: '',
-		locale: 'en',
-		sort_order: 0,
+interface FAQsResponse {
+	faqs: FAQ[];
+}
+
+interface CreateUpdateResponse {
+	success: boolean;
+	faq?: FAQ;
+	error?: string;
+}
+
+interface FAQFormData {
+	question: string;
+	answer: string;
+	locale: string;
+	sort_order: number;
+}
+
+async function fetchFAQs(): Promise<FAQ[]> {
+	const response = await fetch('/api/admin/faqs');
+	if (!response.ok) {
+		if (response.status === 401) {
+			throw new Error('UNAUTHORIZED');
+		}
+		throw new Error('Failed to fetch FAQs');
+	}
+	const data: FAQsResponse = await response.json();
+	return data.faqs;
+}
+
+async function createFAQ(data: FAQFormData): Promise<CreateUpdateResponse> {
+	const response = await fetch('/api/admin/faqs', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(data),
 	});
 
-	useEffect(() => {
-		fetchFAQs();
-	}, []);
+	const result: CreateUpdateResponse = await response.json();
+	if (!response.ok) {
+		return { success: false, error: result.error || 'Failed to create FAQ' };
+	}
+	return { success: true, faq: result.faq };
+}
 
-	const fetchFAQs = async () => {
-		try {
-			const response = await fetch('/api/admin/faqs');
-			if (response.ok) {
-				const data = await response.json();
-				setFaqs(data.faqs);
+async function updateFAQ(id: number, data: FAQFormData): Promise<CreateUpdateResponse> {
+	const response = await fetch(`/api/admin/faqs/${id}`, {
+		method: 'PUT',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(data),
+	});
+
+	const result: CreateUpdateResponse = await response.json();
+	if (!response.ok) {
+		return { success: false, error: result.error || 'Failed to update FAQ' };
+	}
+	return { success: true, faq: result.faq };
+}
+
+async function deleteFAQ(id: number): Promise<void> {
+	const response = await fetch(`/api/admin/faqs/${id}`, {
+		method: 'DELETE',
+	});
+	if (!response.ok) {
+		throw new Error('Failed to delete FAQ');
+	}
+}
+
+export default function AdminFAQsPage() {
+	const router = useRouter();
+	const queryClient = useQueryClient();
+	const [showForm, setShowForm] = useState(false);
+	const [editingId, setEditingId] = useState<number | null>(null);
+	const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null);
+
+	const { data: faqs = [], isLoading } = useQuery<FAQ[]>({
+		queryKey: ['admin-faqs'],
+		queryFn: fetchFAQs,
+		retry: false,
+		throwOnError: (error) => {
+			if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+				router.push('/admin/login');
+				return false;
+			}
+			return true;
+		},
+	});
+
+	const closeForm = () => {
+		setEditingId(null);
+		setEditingFAQ(null);
+		setShowForm(false);
+	};
+
+	const createMutation = useMutation({
+		mutationFn: createFAQ,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-faqs'] });
+			closeForm();
+		},
+	});
+
+	const updateMutation = useMutation({
+		mutationFn: ({ id, data }: { id: number; data: FAQFormData }) => updateFAQ(id, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-faqs'] });
+			closeForm();
+		},
+	});
+
+	const deleteMutation = useMutation({
+		mutationFn: deleteFAQ,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-faqs'] });
+		},
+	});
+
+	const form = useForm({
+		defaultValues: {
+			question: '',
+			answer: '',
+			locale: 'en',
+			sort_order: 0,
+		},
+		onSubmit: async ({ value }) => {
+			if (editingId) {
+				const result = await updateMutation.mutateAsync({ id: editingId, data: value });
+				if (!result.success) {
+					throw new Error(result.error || 'Failed to update FAQ');
+				}
 			} else {
-				if (response.status === 401) {
-					window.location.href = `/${locale}/admin/login`;
+				const result = await createMutation.mutateAsync(value);
+				if (!result.success) {
+					throw new Error(result.error || 'Failed to create FAQ');
 				}
 			}
-		} catch (err) {
-			setError('Failed to load FAQs');
-		} finally {
-			setLoading(false);
-		}
-	};
+		},
+	});
 
-	const resetForm = () => {
-		setFormData({ question: '', answer: '', locale: 'en', sort_order: 0 });
+	// Update form when editingFAQ changes
+	useEffect(() => {
+		if (editingFAQ) {
+			form.setFieldValue('question', editingFAQ.question);
+			form.setFieldValue('answer', editingFAQ.answer);
+			form.setFieldValue('locale', editingFAQ.locale);
+			form.setFieldValue('sort_order', editingFAQ.sort_order);
+		}
+	}, [editingFAQ, form]);
+
+	const openCreateForm = () => {
 		setEditingId(null);
-		setShowForm(false);
-		setError('');
-		setSuccess('');
-	};
-
-	const handleEdit = (faq: FAQ) => {
-		setFormData({
-			question: faq.question,
-			answer: faq.answer,
-			locale: faq.locale,
-			sort_order: faq.sort_order,
-		});
-		setEditingId(faq.id);
+		setEditingFAQ(null);
 		setShowForm(true);
-		setError('');
-		setSuccess('');
 	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setError('');
-		setSuccess('');
-		setSaving(true);
-
-		try {
-			const url = editingId ? `/api/admin/faqs/${editingId}` : '/api/admin/faqs';
-			const method = editingId ? 'PUT' : 'POST';
-
-			const response = await fetch(url, {
-				method,
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(formData),
-			});
-
-			if (response.ok) {
-				setSuccess(editingId ? 'FAQ updated successfully!' : 'FAQ created successfully!');
-				resetForm();
-				fetchFAQs();
-			} else {
-				const data = await response.json();
-				setError(data.error || 'Failed to save FAQ');
-			}
-		} catch (err) {
-			setError('An error occurred. Please try again.');
-		} finally {
-			setSaving(false);
-		}
+	const openEditForm = (faq: FAQ) => {
+		setEditingId(faq.id);
+		setEditingFAQ(faq);
+		setShowForm(true);
 	};
 
-	const handleDelete = async (id: number) => {
+	const handleDelete = (id: number) => {
 		if (!confirm('Are you sure you want to delete this FAQ?')) {
 			return;
 		}
-		try {
-			const response = await fetch(`/api/admin/faqs/${id}`, {
-				method: 'DELETE',
-			});
-			if (response.ok) {
-				setFaqs(faqs.filter((f) => f.id !== id));
-			}
-		} catch (err) {
-			setError('Failed to delete FAQ');
-		}
+		deleteMutation.mutate(id);
 	};
 
-	if (loading) {
+	const isPending = createMutation.isPending || updateMutation.isPending;
+
+	if (isLoading) {
 		return (
 			<div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
 				<div className="px-4 py-6 sm:px-0">
@@ -141,10 +204,7 @@ export default function AdminFAQsPage() {
 						</p>
 					</div>
 					<button
-						onClick={() => {
-							resetForm();
-							setShowForm(true);
-						}}
+						onClick={openCreateForm}
 						className="inline-flex items-center px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
 						style={{ backgroundColor: 'var(--primary)' }}
 					>
@@ -161,35 +221,57 @@ export default function AdminFAQsPage() {
 							{editingId ? 'Edit FAQ' : 'Add New FAQ'}
 						</h2>
 
-						{error && (
+						{createMutation.error && (
 							<div className="mb-4 rounded-xl p-4 text-sm" style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}>
-								{error}
+								{createMutation.error instanceof Error ? createMutation.error.message : 'An error occurred'}
 							</div>
 						)}
 
-						{success && (
-							<div className="mb-4 rounded-xl p-4 text-sm" style={{ backgroundColor: '#dcfce7', color: '#166534' }}>
-								{success}
+						{updateMutation.error && (
+							<div className="mb-4 rounded-xl p-4 text-sm" style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}>
+								{updateMutation.error instanceof Error ? updateMutation.error.message : 'An error occurred'}
 							</div>
 						)}
 
-						<form onSubmit={handleSubmit}>
+						{(form.state.errors as any)?.question && (
+							<div className="mb-4 rounded-xl p-4 text-sm" style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}>
+								{(form.state.errors as any).question}
+							</div>
+						)}
+
+						{(form.state.errors as any)?.answer && (
+							<div className="mb-4 rounded-xl p-4 text-sm" style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}>
+								{(form.state.errors as any).answer}
+							</div>
+						)}
+
+						<form
+							onSubmit={(e) => {
+								e.preventDefault();
+								form.handleSubmit();
+							}}
+						>
 							<div className="grid grid-cols-1 gap-5">
 								{/* Question */}
 								<div>
 									<label htmlFor="question" className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>
 										Question
 									</label>
-									<input
-										type="text"
-										id="question"
-										required
-										value={formData.question}
-										onChange={(e) => setFormData({ ...formData, question: e.target.value })}
-										placeholder="Enter the question"
-										className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-										style={{ borderColor: 'var(--secondary/20)' }}
-										disabled={saving}
+									<form.Field
+										name="question"
+										children={(field) => (
+											<input
+												id="question"
+												name={field.name}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Enter the question"
+												className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
+												style={{ borderColor: 'var(--secondary/20)' }}
+												disabled={isPending}
+											/>
+										)}
 									/>
 								</div>
 
@@ -198,16 +280,22 @@ export default function AdminFAQsPage() {
 									<label htmlFor="answer" className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>
 										Answer
 									</label>
-									<textarea
-										id="answer"
-										required
-										rows={4}
-										value={formData.answer}
-										onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-										placeholder="Enter the answer"
-										className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all resize-none"
-										style={{ borderColor: 'var(--secondary/20)' }}
-										disabled={saving}
+									<form.Field
+										name="answer"
+										children={(field) => (
+											<textarea
+												id="answer"
+												name={field.name}
+												rows={4}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Enter the answer"
+												className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all resize-none"
+												style={{ borderColor: 'var(--secondary/20)' }}
+												disabled={isPending}
+											/>
+										)}
 									/>
 								</div>
 
@@ -217,38 +305,47 @@ export default function AdminFAQsPage() {
 										<label htmlFor="locale" className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>
 											Locale
 										</label>
-										<select
-											id="locale"
-											value={formData.locale}
-											onChange={(e) => setFormData({ ...formData, locale: e.target.value })}
-											className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all appearance-none"
-											style={{ borderColor: 'var(--secondary/20)' }}
-											disabled={saving}
-										>
-											<option value="en">English</option>
-											<option value="it">Italian</option>
-											<option value="es">Spanish</option>
-											<option value="fr">French</option>
-										</select>
+										<form.Field
+											name="locale"
+											children={(field) => (
+												<select
+													id="locale"
+													name={field.name}
+													value={field.state.value}
+													onBlur={field.handleBlur}
+													onChange={(e) => field.handleChange(e.target.value)}
+													className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all appearance-none"
+													style={{ borderColor: 'var(--secondary/20)' }}
+													disabled={isPending}
+												>
+													<option value="en">English</option>
+													<option value="it">Italian</option>
+													<option value="es">Spanish</option>
+													<option value="fr">French</option>
+												</select>
+											)}
+										/>
 									</div>
 
 									<div>
 										<label htmlFor="sort_order" className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>
 											Sort Order
 										</label>
-										<input
-											type="number"
-											id="sort_order"
-											value={formData.sort_order}
-											onChange={(e) =>
-												setFormData({
-													...formData,
-													sort_order: parseInt(e.target.value) || 0,
-												})
-											}
-											className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
-											style={{ borderColor: 'var(--secondary/20)' }}
-											disabled={saving}
+										<form.Field
+											name="sort_order"
+											children={(field) => (
+												<input
+													id="sort_order"
+													name={field.name}
+													type="number"
+													value={field.state.value}
+													onBlur={field.handleBlur}
+													onChange={(e) => field.handleChange(parseInt(e.target.value) || 0)}
+													className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
+													style={{ borderColor: 'var(--secondary/20)' }}
+													disabled={isPending}
+												/>
+											)}
 										/>
 									</div>
 								</div>
@@ -257,18 +354,18 @@ export default function AdminFAQsPage() {
 							<div className="mt-6 flex justify-end gap-3">
 								<button
 									type="button"
-									onClick={resetForm}
-									className="px-6 py-3 rounded-xl text-sm font-semibold border transition-all hover:scale-105 bg-teal-400/10 text-teal-400"
-									disabled={saving}
+									onClick={closeForm}
+									className="px-6 py-3 rounded-xl text-sm font-semibold border transition-all bg-teal-400/10 text-teal-400"
+									disabled={isPending}
 								>
 									Cancel
 								</button>
 								<button
 									type="submit"
-									disabled={saving}
-									className="px-6 py-3 rounded-xl text-sm font-semibold text-primary bg-primary/10 transition-all hover:scale-105 disabled:opacity-50"
+									disabled={isPending}
+									className="px-6 py-3 rounded-xl border text-sm font-semibold text-primary bg-primary/10 transition-all disabled:opacity-50"
 								>
-									{saving ? 'Saving...' : editingId ? 'Update FAQ' : 'Create FAQ'}
+									{isPending ? 'Saving...' : editingId ? 'Update FAQ' : 'Create FAQ'}
 								</button>
 							</div>
 						</form>
@@ -309,15 +406,17 @@ export default function AdminFAQsPage() {
 										</div>
 										<div className="flex gap-2 sm:self-center">
 											<button
-												onClick={() => handleEdit(faq)}
-												className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
+												onClick={() => openEditForm(faq)}
+												disabled={deleteMutation.isPending}
+												className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105 disabled:opacity-50"
 												style={{ backgroundColor: 'var(--primary)', color: 'white' }}
 											>
 												Edit
 											</button>
 											<button
 												onClick={() => handleDelete(faq.id)}
-												className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
+												disabled={deleteMutation.isPending}
+												className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105 disabled:opacity-50"
 												style={{ backgroundColor: 'var(--error)', color: 'white' }}
 											>
 												Delete

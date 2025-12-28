@@ -10,28 +10,32 @@ import {
 	PhoneArrowUpFreeIcons,
 	MailSend01FreeIcons,
 } from '@hugeicons/core-free-icons';
+import { useI18n } from '@/lib/i18n/client';
 
 export function ContactForm() {
+	const t = useI18n();
+
 	return (
 		<div className="bg-background-secondary rounded-2xl p-3 md:p-8 border border-secondary/20">
 			<h2 className="text-2xl md:text-3xl font-bold mb-2">
-				Send Us a <span className="text-primary">Message</span>
+				{t('contact.form.title').split(' ').slice(0, 2).join(' ')}{' '}
+				<span className="text-primary">{t('contact.form.title').split(' ').slice(2).join(' ')}</span>
 			</h2>
-			<p className="text-text/70 mb-6 text-sm">Fill out the form below and we'll get back to you within 24 hours.</p>
+			<p className="text-text/70 mb-6 text-sm">{t('contact.form.description')}</p>
 
 			<form className="space-y-4">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 					{/* Name */}
 					<div>
 						<label htmlFor="name" className="block text-sm font-medium text-text mb-2">
-							Full Name
+							{t('contact.form.fullName')}
 						</label>
 						<div className="relative">
 							<HugeiconsIcon icon={User02FreeIcons} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/40" />
 							<input
 								type="text"
 								id="name"
-								placeholder="John Doe"
+								placeholder={t('contact.form.fullNamePlaceholder')}
 								className="w-full pl-10 pr-4 py-3 rounded-xl border border-secondary/20 bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm transition-all"
 							/>
 						</div>
@@ -40,14 +44,14 @@ export function ContactForm() {
 					{/* Email */}
 					<div>
 						<label htmlFor="email" className="block text-sm font-medium text-text mb-2">
-							Email Address
+							{t('contact.form.email')}
 						</label>
 						<div className="relative">
 							<HugeiconsIcon icon={Mail01FreeIcons} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/40" />
 							<input
 								type="email"
 								id="email"
-								placeholder="john@example.com"
+								placeholder={t('contact.form.emailPlaceholder')}
 								className="w-full pl-10 pr-4 py-3 rounded-xl border border-secondary/20 bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm transition-all"
 							/>
 						</div>
@@ -58,7 +62,7 @@ export function ContactForm() {
 					{/* Phone */}
 					<div>
 						<label htmlFor="phone" className="block text-sm font-medium text-text mb-2">
-							Phone Number
+							{t('contact.form.phone')}
 						</label>
 						<div className="relative">
 							<HugeiconsIcon
@@ -68,7 +72,7 @@ export function ContactForm() {
 							<input
 								type="tel"
 								id="phone"
-								placeholder="+1 (555) 000-0000"
+								placeholder={t('contact.form.phonePlaceholder')}
 								className="w-full pl-10 pr-4 py-3 rounded-xl border border-secondary/20 bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm transition-all"
 							/>
 						</div>
@@ -77,7 +81,7 @@ export function ContactForm() {
 					{/* Service Type */}
 					<div>
 						<label htmlFor="service" className="block text-sm font-medium text-text mb-2">
-							Service Type
+							{t('contact.form.serviceType')}
 						</label>
 						<div className="relative">
 							<HugeiconsIcon
@@ -88,11 +92,11 @@ export function ContactForm() {
 								id="service"
 								className="w-full pl-10 pr-4 py-3 rounded-xl border border-secondary/20 bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm transition-all appearance-none"
 							>
-								<option value="">Select a service</option>
-								<option value="house">House Cleaning</option>
-								<option value="office">Office Cleaning</option>
-								<option value="deep">Deep Cleaning</option>
-								<option value="post-construction">Post-Construction</option>
+								<option value="">{t('contact.form.selectService')}</option>
+								<option value="house">{t('contact.form.serviceHouse')}</option>
+								<option value="office">{t('contact.form.serviceOffice')}</option>
+								<option value="deep">{t('contact.form.serviceDeep')}</option>
+								<option value="post-construction">{t('contact.form.servicePostConstruction')}</option>
 							</select>
 						</div>
 					</div>
@@ -101,14 +105,14 @@ export function ContactForm() {
 				{/* Message */}
 				<div>
 					<label htmlFor="message" className="block text-sm font-medium text-text mb-2">
-						Your Message
+						{t('contact.form.message')}
 					</label>
 					<div className="relative">
 						<HugeiconsIcon icon={Message01FreeIcons} className="absolute left-3 top-3 w-5 h-5 text-text/40" />
 						<textarea
 							id="message"
 							rows={4}
-							placeholder="Tell us about your cleaning needs..."
+							placeholder={t('contact.form.messagePlaceholder')}
 							className="w-full pl-10 pr-4 py-3 rounded-xl border border-secondary/20 bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm transition-all resize-none"
 						></textarea>
 					</div>
@@ -119,7 +123,7 @@ export function ContactForm() {
 					type="submit"
 					className="w-full inline-flex items-center justify-center gap-2 rounded-xl text-sm text-white transition-all hover:scale-105 bg-primary hover:bg-primary/90 p-3 px-8 font-semibold"
 				>
-					<span>Send Message</span>
+					<span>{t('contact.form.sendMessage')}</span>
 					<HugeiconsIcon icon={MailSend01FreeIcons} />
 				</button>
 			</form>

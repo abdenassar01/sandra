@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface Review {
 	id: number;
@@ -14,64 +14,83 @@ interface Review {
 	created_at: string;
 }
 
+interface ReviewsResponse {
+	reviews: Review[];
+}
+
+async function fetchReviews(): Promise<Review[]> {
+	const response = await fetch('/api/admin/reviews');
+	if (!response.ok) {
+		if (response.status === 401) {
+			throw new Error('UNAUTHORIZED');
+		}
+		throw new Error('Failed to fetch reviews');
+	}
+	const data: ReviewsResponse = await response.json();
+	return data.reviews;
+}
+
+async function approveReview(id: number): Promise<void> {
+	const response = await fetch(`/api/admin/reviews/${id}`, {
+		method: 'PATCH',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ action: 'approve' }),
+	});
+	if (!response.ok) {
+		throw new Error('Failed to approve review');
+	}
+}
+
+async function deleteReview(id: number): Promise<void> {
+	const response = await fetch(`/api/admin/reviews/${id}`, {
+		method: 'DELETE',
+	});
+	if (!response.ok) {
+		throw new Error('Failed to delete review');
+	}
+}
+
 export default function AdminReviewsPage() {
-	const params = useParams();
-	const locale = (params?.locale as string) || 'en';
-	const [reviews, setReviews] = useState<Review[]>([]);
-	const [loading, setLoading] = useState(true);
+	const router = useRouter();
+	const queryClient = useQueryClient();
 	const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('all');
 
-	useEffect(() => {
-		fetchReviews();
-	}, []);
-
-	const fetchReviews = async () => {
-		try {
-			const response = await fetch('/api/admin/reviews');
-			if (response.ok) {
-				const data = await response.json();
-				setReviews(data.reviews);
-			} else {
-				if (response.status === 401) {
-					window.location.href = `/${locale}/admin/login`;
-				}
+	const { data: reviews = [], isLoading } = useQuery<Review[]>({
+		queryKey: ['admin-reviews'],
+		queryFn: fetchReviews,
+		retry: false,
+		throwOnError: (error) => {
+			if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+				router.push('/admin/login');
+				return false;
 			}
-		} catch (error) {
-			console.error('Failed to fetch reviews:', error);
-		} finally {
-			setLoading(false);
-		}
+			return true;
+		},
+	});
+
+	const approveMutation = useMutation({
+		mutationFn: approveReview,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+		},
+	});
+
+	const deleteMutation = useMutation({
+		mutationFn: deleteReview,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+		},
+	});
+
+	const handleApprove = (id: number) => {
+		approveMutation.mutate(id);
 	};
 
-	const handleApprove = async (id: number) => {
-		try {
-			const response = await fetch(`/api/admin/reviews/${id}`, {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'approve' }),
-			});
-			if (response.ok) {
-				setReviews(reviews.map((r) => (r.id === id ? { ...r, approved: 1 } : r)));
-			}
-		} catch (error) {
-			console.error('Failed to approve review:', error);
-		}
-	};
-
-	const handleDelete = async (id: number) => {
+	const handleDelete = (id: number) => {
 		if (!confirm('Are you sure you want to delete this review?')) {
 			return;
 		}
-		try {
-			const response = await fetch(`/api/admin/reviews/${id}`, {
-				method: 'DELETE',
-			});
-			if (response.ok) {
-				setReviews(reviews.filter((r) => r.id !== id));
-			}
-		} catch (error) {
-			console.error('Failed to delete review:', error);
-		}
+		deleteMutation.mutate(id);
 	};
 
 	const filteredReviews = reviews.filter((review) => {
@@ -82,7 +101,7 @@ export default function AdminReviewsPage() {
 
 	const pendingCount = reviews.filter((r) => r.approved === 0).length;
 
-	if (loading) {
+	if (isLoading) {
 		return (
 			<div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
 				<div className="px-4 py-6 sm:px-0">
@@ -206,7 +225,8 @@ export default function AdminReviewsPage() {
 											{review.approved === 0 && (
 												<button
 													onClick={() => handleApprove(review.id)}
-													className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
+													disabled={approveMutation.isPending}
+													className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105 disabled:opacity-50"
 													style={{ backgroundColor: 'var(--success)', color: 'var(--text)' }}
 												>
 													Approve
@@ -214,7 +234,8 @@ export default function AdminReviewsPage() {
 											)}
 											<button
 												onClick={() => handleDelete(review.id)}
-												className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
+												disabled={deleteMutation.isPending}
+												className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105 disabled:opacity-50"
 												style={{ backgroundColor: 'var(--error)', color: 'white' }}
 											>
 												Delete

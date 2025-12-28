@@ -1,9 +1,10 @@
-'use client';
-
 import React from 'react';
 import { Buttons } from '@/components';
+import { getScopedI18n } from '@/lib/i18n/server';
 
-export function HeroSection() {
+export async function HeroSection() {
+	const t = await getScopedI18n('home.hero');
+
 	return (
 		<section id="#Home" className="relative h-[calc(100svh-120px)] rounded-2xl overflow-hidden">
 			<div className="absolute inset-0">
@@ -17,16 +18,13 @@ export function HeroSection() {
 				<div className="p-4 w-full">
 					<div className="">
 						<h1 className="text-2xl md:text-6xl font-bold text-white mb-2">
-							Professional
+							{t('title1')}
 							<br />
-							<span className="text-primary">Cleaning Services</span>
+							<span className="text-primary">{t('title2')}</span>
 							<br />
-							You Can Trust
+							{t('title3')}
 						</h1>
-						<p className="text-white/90 mb-2 leading-relaxed">
-							Expert cleaning solutions for your home and office. Quality service, reliable results, and complete satisfaction
-							guaranteed.
-						</p>
+						<p className="text-white/90 mb-2 leading-relaxed">{t('description')}</p>
 						<Buttons />
 					</div>
 				</div>

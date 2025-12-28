@@ -6,7 +6,6 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 	const { locale } = await params;
 	const { admin } = await requireAuth(locale);
 
-	// Get stats
 	const allReviews = reviewsDb.getAllReviews();
 	const pendingReviews = allReviews.filter((r) => r.approved === 0);
 	const approvedReviews = allReviews.filter((r) => r.approved === 1);
@@ -24,12 +23,8 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 					</p>
 				</div>
 
-				{/* Stats Grid */}
 				<div className="grid grid-cols-1 gap-3 sm:grid-cols-3 mb-8">
-					<div
-						className="rounded-2xl p-6 border border-primary/10"
-						style={{ backgroundColor: 'var(--background-secondary)', borderColor: 'var(--secondary/20)' }}
-					>
+					<div className="rounded-2xl p-6 border border-primary/10">
 						<div className="flex items-center">
 							<div className="flex-1">
 								<p className="text-sm font-medium" style={{ color: 'var(--text)', opacity: 0.6 }}>
@@ -67,18 +62,11 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 						</div>
 					</div>
 
-					<div
-						className="rounded-2xl p-6 border border-primary/10"
-						style={{ backgroundColor: 'var(--background-secondary)', borderColor: 'var(--secondary/20)' }}
-					>
+					<div className="rounded-2xl p-6 border border-primary/10">
 						<div className="flex items-center">
 							<div className="flex-1">
-								<p className="text-sm font-medium" style={{ color: 'var(--text)', opacity: 0.6 }}>
-									Total FAQs
-								</p>
-								<p className="mt-2 text-3xl font-bold" style={{ color: 'var(--text)' }}>
-									{allFaqs.length}
-								</p>
+								<p className="text-sm font-medium">Total FAQs</p>
+								<p className="mt-2 text-3xl font-bold">{allFaqs.length}</p>
 							</div>
 						</div>
 					</div>
@@ -105,7 +93,6 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 							<Link
 								href={`/${locale}/admin/faqs`}
 								className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold transition-all hover:scale-105"
-								style={{ backgroundColor: 'var(--secondary)', color: 'white' }}
 							>
 								Manage FAQs
 							</Link>

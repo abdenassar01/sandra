@@ -3,3 +3,4 @@ export * from './about';
 export * from './services';
 export * from './why-choose-us';
 export * from './testimonials';
+export * from './faq-section';
