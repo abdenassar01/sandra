@@ -7,6 +7,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { LinkSquare02FreeIcons, Menu01FreeIcons, CancelCircleFreeIcons } from '@hugeicons/core-free-icons';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/utils';
+import { LanguageSwitcher } from '../language-switcher';
 
 const routes = [
 	{ name: 'Home', href: '/' },
@@ -46,13 +47,16 @@ export function Header() {
 				))}
 			</nav>
 
-			<Link
-				href="/contact"
-				className="hidden md:flex hover:bg-secondary/30 items-center gap-2 rounded-xl text-sm text-secondary transition-colors bg-secondary/10 p-2 px-4"
-			>
-				<div className="text-center">Contact Us</div>
-				<HugeiconsIcon icon={LinkSquare02FreeIcons} />
-			</Link>
+			<div className="hidden md:flex items-center gap-2">
+				<Link
+					href="/contact"
+					className="hover:bg-secondary/30 items-center flex gap-2 rounded-xl text-sm text-secondary transition-colors bg-secondary/10 p-2 px-4"
+				>
+					<div className="text-center">Contact Us</div>
+					<HugeiconsIcon icon={LinkSquare02FreeIcons} />
+				</Link>
+				<LanguageSwitcher />
+			</div>
 
 			<button
 				onClick={toggleMenu}
@@ -62,7 +66,6 @@ export function Header() {
 				<HugeiconsIcon icon={isMenuOpen ? CancelCircleFreeIcons : Menu01FreeIcons} className="w-6 h-6" />
 			</button>
 
-			{/* Mobile Navigation */}
 			{isMenuOpen && (
 				<div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-black rounded-2xl p-4 flex flex-col gap-4 z-50">
 					<nav className="flex flex-col gap-3">
@@ -88,6 +91,9 @@ export function Header() {
 						<div className="text-center">Contact Us</div>
 						<HugeiconsIcon icon={LinkSquare02FreeIcons} />
 					</Link>
+					<div className="flex items-center justify-center">
+						<LanguageSwitcher />
+					</div>
 				</div>
 			)}
 		</header>
