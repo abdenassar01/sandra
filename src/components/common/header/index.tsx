@@ -12,7 +12,6 @@ const routes = [
 	{ name: 'Home', href: '/' },
 	{ name: 'About', href: '/#About' },
 	{ name: 'Services', href: '/services' },
-	{ name: 'Pricing', href: '/#Pricing' },
 ];
 
 export function Header() {

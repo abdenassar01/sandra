@@ -1,8 +1,5 @@
-'use client';
-
-import { useQuery } from '@tanstack/react-query';
-import { useI18n } from '@/lib/i18n/client';
 import { getScopedI18n } from '@/lib/i18n/server';
+import { headers } from 'next/headers';
 
 interface FAQ {
 	question: string;
@@ -14,7 +11,14 @@ interface FAQResponse {
 }
 
 async function fetchFAQs(locale?: string): Promise<FAQ[]> {
-	const response = await fetch(`/api/faqs${locale ? `?locale=${locale}` : ''}`);
+	const headersList = await headers();
+	const host = headersList.get('host') || 'localhost:3000';
+	const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+	const baseUrl = `${protocol}://${host}`;
+
+	const response = await fetch(`${baseUrl}/api/faqs${locale ? `?locale=${locale}` : ''}`, {
+		cache: 'no-store',
+	});
 	if (!response.ok) {
 		throw new Error('Failed to fetch FAQs');
 	}
