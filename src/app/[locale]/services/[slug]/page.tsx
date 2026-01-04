@@ -9,6 +9,13 @@ import { StructuredData, createBreadcrumbStructuredData, createServiceStructured
 
 const servicesDir = path.join(process.cwd(), 'src/app/services/content');
 
+const serviceImages: Record<string, string> = {
+	'house-cleaning': '/images/house-cleaning.jpeg',
+	'office-cleaning': '/images/office-cleaning.jpeg',
+	'deep-cleaning': '/images/deep-cleaning.jpeg',
+	'post-construction': '/images/post-cleaning.png',
+};
+
 async function getServiceContent(slug: string) {
 	const filePath = path.join(servicesDir, `${slug}.mdx`);
 
@@ -27,11 +34,7 @@ export async function generateStaticParams() {
 	}));
 }
 
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
 	const { slug } = await params;
 	const content = await getServiceContent(slug);
 
@@ -52,22 +55,11 @@ export async function generateMetadata({
 	return {
 		title,
 		description,
-		keywords: [
-			title,
-			`${title} service`,
-			'professional cleaning',
-			'sandra cleaning',
-			slug,
-			'cleaning services',
-		],
+		keywords: [title, `${title} service`, 'professional cleaning', 'sandra cleaning', slug, 'cleaning services'],
 	};
 }
 
-export default async function ServicePage({
-	params,
-}: {
-	params: Promise<{ slug: string }>;
-}) {
+export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;
 	const content = await getServiceContent(slug);
 
@@ -93,9 +85,15 @@ export default async function ServicePage({
 			/>
 			<StructuredData data={createServiceStructuredData(title, description)} />
 
-			<div className="flex flex-col gap-4 container">
-				{/* Header */}
-				<div className="text-center py-8 md:py-12">
+			<div className="flex flex-col pt-6 gap-4 container">
+				{serviceImages[slug] && (
+					<div className="relative  overflow-hidden rounded-2xl my-2">
+						<img src={serviceImages[slug]} alt={title} className="w-full h-full object-cover" />
+						<div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
+					</div>
+				)}
+
+				<div className="text-center py-6 md:py-12">
 					<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
 						<span className="text-primary">{title}</span>
 					</h1>

@@ -20,6 +20,7 @@ const serviceInfo = [
 		title: 'House Cleaning',
 		description: 'Complete home cleaning services tailored to your needs. From regular maintenance to deep cleaning.',
 		icon: Home01FreeIcons,
+		image: '/images/house-cleaning.jpeg',
 		features: ['Room by room cleaning', 'Kitchen & bathroom sanitization', 'Floor care', 'Window cleaning'],
 	},
 	{
@@ -27,6 +28,7 @@ const serviceInfo = [
 		title: 'Office Cleaning',
 		description: 'Professional office cleaning services to create a productive and healthy work environment.',
 		icon: Building04FreeIcons,
+		image: '/images/office-cleaning.jpeg',
 		features: ['Work area sanitization', 'Common area cleaning', 'Restroom maintenance', 'Waste disposal'],
 	},
 	{
@@ -34,6 +36,7 @@ const serviceInfo = [
 		title: 'Deep Cleaning',
 		description: 'Intensive cleaning service for a thorough and detailed clean of every corner of your space.',
 		icon: SparklesFreeIcons,
+		image: '/images/deep-cleaning.jpeg',
 		features: ['Detailed cleaning', 'Hard-to-reach areas', 'Appliance cleaning', 'Baseboards & trim'],
 	},
 	{
@@ -41,6 +44,7 @@ const serviceInfo = [
 		title: 'Post-Construction',
 		description: 'Specialized cleaning services after construction or renovation projects.',
 		icon: Wrench01FreeIcons,
+		image: '/images/post-cleaning.png',
 		features: ['Dust removal', 'Debris cleanup', 'Surface polishing', 'Final touch-ups'],
 	},
 ];
@@ -91,12 +95,22 @@ export default function ServicesPage() {
 								<Link
 									key={service.slug}
 									href={`/services/${service.slug}`}
-									className="group bg-background-secondary rounded-2xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-secondary/20"
+									className="group bg-background-secondary rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-secondary/20"
 								>
-									{/* Icon */}
-									<div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-										<HugeiconsIcon icon={service.icon} className="w-8 h-8 text-primary" />
+									{/* Service Image */}
+									<div className="relative h-48 overflow-hidden bg-primary/5">
+										<img
+											src={service.image}
+											alt={service.title}
+											className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+										/>
 									</div>
+
+									<div className="p-6">
+										{/* Icon */}
+										<div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 -mt-14 relative z-10 border-4 border-background-secondary group-hover:bg-primary/20 transition-colors">
+											<HugeiconsIcon icon={service.icon} className="w-8 h-8 text-primary" />
+										</div>
 
 									{/* Content */}
 									<h3 className="text-xl font-semibold text-text mb-3">{service.title}</h3>
@@ -116,6 +130,7 @@ export default function ServicesPage() {
 									<div className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-medium">
 										Learn More
 										<HugeiconsIcon icon={LinkSquare02FreeIcons} className="w-4 h-4" />
+									</div>
 									</div>
 								</Link>
 							))}

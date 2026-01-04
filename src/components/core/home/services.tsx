@@ -19,6 +19,13 @@ const serviceIcons = {
 	postConstruction: Wrench01FreeIcons,
 };
 
+const serviceImages = {
+	house: '/images/house-cleaning.jpeg',
+	office: '/images/office-cleaning.jpeg',
+	deep: '/images/deep-cleaning.jpeg',
+	postConstruction: '/images/post-cleaning.png',
+};
+
 const serviceSlugs = {
 	house: 'house-cleaning',
 	office: 'office-cleaning',
@@ -113,15 +120,25 @@ export function ServicesSection() {
 						<Link
 							key={service.key}
 							href={`/services/${service.slug}`}
-							className="group bg-background-secondary rounded-2xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-secondary/20"
+							className="group bg-background-secondary rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-secondary/20"
 						>
-							{/* Icon */}
-							<div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-								<HugeiconsIcon
-									icon={serviceIcons[service.iconKey as keyof typeof serviceIcons]}
-									className="w-8 h-8 text-primary"
+							{/* Service Image */}
+							<div className="relative h-48 overflow-hidden bg-primary/5">
+								<img
+									src={serviceImages[service.iconKey as keyof typeof serviceImages]}
+									alt={service.title}
+									className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
 								/>
 							</div>
+
+							<div className="p-6">
+								{/* Icon */}
+								<div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 -mt-14 relative z-10 border-4 border-background-secondary group-hover:bg-primary/20 transition-colors">
+									<HugeiconsIcon
+										icon={serviceIcons[service.iconKey as keyof typeof serviceIcons]}
+										className="w-8 h-8 text-primary"
+									/>
+								</div>
 
 							{/* Content */}
 							<h3 className="text-xl font-semibold text-text mb-3">{service.title}</h3>
@@ -141,6 +158,7 @@ export function ServicesSection() {
 							<div className="inline-flex items-center gap-2 text-primary group-hover:text-primary/80 transition-colors text-sm font-medium">
 								{t('common.learnMore')}
 								<HugeiconsIcon icon={LinkSquare02FreeIcons} className="w-4 h-4" />
+							</div>
 							</div>
 						</Link>
 					))}
