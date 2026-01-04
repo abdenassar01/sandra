@@ -11,68 +11,90 @@ import {
 	LinkSquare02FreeIcons,
 } from '@hugeicons/core-free-icons';
 import { StructuredData, createBreadcrumbStructuredData } from '@/lib/seo';
+import { getI18n } from '@/lib/i18n/server';
 
 const servicesDir = path.join(process.cwd(), 'src/app/services/content');
 
-const serviceInfo = [
+const serviceConfig = [
 	{
 		slug: 'house-cleaning',
-		title: 'House Cleaning',
-		description: 'Complete home cleaning services tailored to your needs. From regular maintenance to deep cleaning.',
 		icon: Home01FreeIcons,
 		image: '/images/house-cleaning.jpeg',
-		features: ['Room by room cleaning', 'Kitchen & bathroom sanitization', 'Floor care', 'Window cleaning'],
+		i18nKey: 'houseCleaning',
 	},
 	{
 		slug: 'office-cleaning',
-		title: 'Office Cleaning',
-		description: 'Professional office cleaning services to create a productive and healthy work environment.',
 		icon: Building04FreeIcons,
 		image: '/images/office-cleaning.jpeg',
-		features: ['Work area sanitization', 'Common area cleaning', 'Restroom maintenance', 'Waste disposal'],
+		i18nKey: 'officeCleaning',
 	},
 	{
 		slug: 'deep-cleaning',
-		title: 'Deep Cleaning',
-		description: 'Intensive cleaning service for a thorough and detailed clean of every corner of your space.',
 		icon: SparklesFreeIcons,
 		image: '/images/deep-cleaning.jpeg',
-		features: ['Detailed cleaning', 'Hard-to-reach areas', 'Appliance cleaning', 'Baseboards & trim'],
+		i18nKey: 'deepCleaning',
 	},
 	{
 		slug: 'post-construction',
-		title: 'Post-Construction',
-		description: 'Specialized cleaning services after construction or renovation projects.',
 		icon: Wrench01FreeIcons,
 		image: '/images/post-cleaning.png',
-		features: ['Dust removal', 'Debris cleanup', 'Surface polishing', 'Final touch-ups'],
+		i18nKey: 'postConstruction',
 	},
 ];
 
-export const metadata: Metadata = {
-	title: 'Services',
-	description:
-		'Explore our comprehensive cleaning services including house cleaning, office cleaning, deep cleaning, and post-construction cleaning.',
-	keywords: [
-		'cleaning services',
-		'house cleaning',
-		'office cleaning',
-		'deep cleaning',
-		'post-construction cleaning',
-		'commercial cleaning',
-		'residential cleaning',
-		'professional cleaners',
-	],
-};
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+	const { locale } = await params;
+	const t = await getI18n(locale);
 
-export default function ServicesPage() {
+	return {
+		title: t('home.services.title'),
+		description: t('home.services.subtitle'),
+		keywords: [
+			'cleaning services',
+			'house cleaning',
+			'office cleaning',
+			'deep cleaning',
+			'post-construction cleaning',
+			'commercial cleaning',
+			'residential cleaning',
+			'professional cleaners',
+		],
+	};
+}
+
+export default async function ServicesPage({
+	params,
+}: {
+	params: Promise<{ locale: string }>;
+}) {
+	const { locale } = await params;
+	const t = await getI18n(locale);
+
+	const serviceInfo = serviceConfig.map((service) => ({
+		...service,
+		title: t(`home.services.${service.i18nKey}.title` as any),
+		description: t(`home.services.${service.i18nKey}.description` as any),
+		features: [
+			t(`home.services.${service.i18nKey}.feature1` as any),
+			t(`home.services.${service.i18nKey}.feature2` as any),
+			t(`home.services.${service.i18nKey}.feature3` as any),
+			t(`home.services.${service.i18nKey}.feature4` as any),
+		],
+	}));
+
+	const [title1, title2] = t('home.services.title').split(' ');
+
 	return (
 		<>
 			{/* Structured Data */}
 			<StructuredData
 				data={createBreadcrumbStructuredData([
-					{ name: 'Home', url: 'https://sandracleaning.com' },
-					{ name: 'Services', url: 'https://sandracleaning.com/services' },
+					{ name: t('nav.home'), url: `https://sandracleaning.com/${locale}` },
+					{ name: t('nav.services'), url: `https://sandracleaning.com/${locale}/services` },
 				])}
 			/>
 
@@ -80,11 +102,9 @@ export default function ServicesPage() {
 				{/* Header */}
 				<div className="text-center py-8 md:py-12">
 					<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-						Our <span className="text-primary">Services</span>
+						{title1} <span className="text-primary">{title2}</span>
 					</h1>
-					<p className="text-text/70 max-w-2xl mx-auto">
-						We offer comprehensive cleaning solutions designed to meet your specific needs and exceed your expectations.
-					</p>
+					<p className="text-text/70 max-w-2xl mx-auto">{t('home.services.subtitle')}</p>
 				</div>
 
 				{/* Services Grid */}
@@ -94,7 +114,7 @@ export default function ServicesPage() {
 							{serviceInfo.map((service) => (
 								<Link
 									key={service.slug}
-									href={`/services/${service.slug}`}
+									href={`/${locale}/services/${service.slug}`}
 									className="group bg-background-secondary rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-secondary/20"
 								>
 									{/* Service Image */}
@@ -112,25 +132,25 @@ export default function ServicesPage() {
 											<HugeiconsIcon icon={service.icon} className="w-8 h-8 text-primary" />
 										</div>
 
-									{/* Content */}
-									<h3 className="text-xl font-semibold text-text mb-3">{service.title}</h3>
-									<p className="text-text/70 mb-4 text-sm leading-relaxed">{service.description}</p>
+										{/* Content */}
+										<h3 className="text-xl font-semibold text-text mb-3">{service.title}</h3>
+										<p className="text-text/70 mb-4 text-sm leading-relaxed">{service.description}</p>
 
-									{/* Features List */}
-									<ul className="space-y-2 mb-6">
-										{service.features.map((feature) => (
-											<li key={feature} className="flex items-center gap-2 text-sm text-text/60">
-												<div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-												{feature}
-											</li>
-										))}
-									</ul>
+										{/* Features List */}
+										<ul className="space-y-2 mb-6">
+											{service.features.map((feature) => (
+												<li key={feature} className="flex items-center gap-2 text-sm text-text/60">
+													<div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+													{feature}
+												</li>
+											))}
+										</ul>
 
-									{/* Learn More Link */}
-									<div className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-medium">
-										Learn More
-										<HugeiconsIcon icon={LinkSquare02FreeIcons} className="w-4 h-4" />
-									</div>
+										{/* Learn More Link */}
+										<div className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-medium">
+											{t('common.learnMore')}
+											<HugeiconsIcon icon={LinkSquare02FreeIcons} className="w-4 h-4" />
+										</div>
 									</div>
 								</Link>
 							))}
@@ -141,12 +161,12 @@ export default function ServicesPage() {
 				{/* CTA Section */}
 				<section className="py-8 md:py-12 bg-black/5">
 					<div className="container mx-auto px-4 text-center">
-						<p className="text-text/70 mb-6">Need a custom cleaning solution?</p>
+						<p className="text-text/70 mb-6">{t('home.services.customQuote')}</p>
 						<Link
-							href="/contact"
+							href={`/${locale}/contact`}
 							className="inline-flex items-center gap-2 rounded-xl text-white transition-all hover:scale-105 bg-primary hover:bg-primary/90 p-3 px-8 font-semibold"
 						>
-							Get Custom Quote
+							{t('home.services.getCustomQuote')}
 							<HugeiconsIcon icon={LinkSquare02FreeIcons} />
 						</Link>
 					</div>

@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { StructuredData, createBreadcrumbStructuredData, createServiceStructuredData } from '@/lib/seo';
+import { getI18n } from '@/lib/i18n/server';
 
 const servicesDir = path.join(process.cwd(), 'src/app/services/content');
 
@@ -16,27 +17,34 @@ const serviceImages: Record<string, string> = {
 	'post-construction': '/images/post-cleaning.png',
 };
 
-async function getServiceContent(slug: string) {
-	const filePath = path.join(servicesDir, `${slug}.mdx`);
+async function getServiceContent(slug: string, locale: string) {
+	const fileName = locale === 'fr' ? `${slug}-fr.mdx` : `${slug}.mdx`;
+	const filePath = path.join(servicesDir, fileName);
 
 	if (!fs.existsSync(filePath)) {
-		return null;
+		// Fallback to English if French version doesn't exist
+		const fallbackPath = path.join(servicesDir, `${slug}.mdx`);
+		if (!fs.existsSync(fallbackPath)) {
+			return null;
+		}
+		return fs.readFileSync(fallbackPath, 'utf-8');
 	}
 
-	const content = fs.readFileSync(filePath, 'utf-8');
-	return content;
+	return fs.readFileSync(filePath, 'utf-8');
 }
 
 export async function generateStaticParams() {
 	const files = fs.readdirSync(servicesDir);
-	return files.map((filename) => ({
-		slug: filename.replace('.mdx', ''),
-	}));
+	return files
+		.filter((filename) => !filename.includes('-fr.mdx'))
+		.map((filename) => ({
+			slug: filename.replace('.mdx', ''),
+		}));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-	const { slug } = await params;
-	const content = await getServiceContent(slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
+	const { slug, locale } = await params;
+	const content = await getServiceContent(slug, locale);
 
 	if (!content) {
 		return {
@@ -48,9 +56,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	const title = titleMatch ? titleMatch[1] : slug.replace(/-/g, ' ');
 
 	const descriptionMatch = content.match(/^> "(.+)"$/m);
-	const description = descriptionMatch
-		? descriptionMatch[1]
-		: `Professional ${title} services by Sandra Cleaning. Quality, reliability, and complete satisfaction guaranteed.`;
+	const t = await getI18n();
+	const description = descriptionMatch ? descriptionMatch[1] : t('home.services.subtitle');
 
 	return {
 		title,
@@ -59,9 +66,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	};
 }
 
-export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
-	const { slug } = await params;
-	const content = await getServiceContent(slug);
+export default async function ServicePage({ params }: { params: Promise<{ slug: string; locale: string }> }) {
+	const { slug, locale } = await params;
+	const t = await getI18n();
+	const content = await getServiceContent(slug, locale);
 
 	if (!content) {
 		notFound();
@@ -78,18 +86,18 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 			{/* Structured Data */}
 			<StructuredData
 				data={createBreadcrumbStructuredData([
-					{ name: 'Home', url: 'https://sandracleaning.com' },
-					{ name: 'Services', url: 'https://sandracleaning.com/services' },
-					{ name: title, url: `https://sandracleaning.com/services/${slug}` },
+					{ name: t('nav.home'), url: `https://sandracleaning.com/${locale}` },
+					{ name: t('nav.services'), url: `https://sandracleaning.com/${locale}/services` },
+					{ name: title, url: `https://sandracleaning.com/${locale}/services/${slug}` },
 				])}
 			/>
 			<StructuredData data={createServiceStructuredData(title, description)} />
 
 			<div className="flex flex-col pt-6 gap-4 container">
 				{serviceImages[slug] && (
-					<div className="relative  overflow-hidden rounded-2xl my-2">
+					<div className="relative overflow-hidden rounded-2xl my-2">
 						<img src={serviceImages[slug]} alt={title} className="w-full h-full object-cover" />
-						<div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
+						<div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 					</div>
 				)}
 
@@ -98,7 +106,9 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 						<span className="text-primary">{title}</span>
 					</h1>
 					<p className="text-text/70 max-w-2xl mx-auto">
-						Professional {title.toLowerCase()} services by Sandra Cleaning. Quality service, reliable results.
+						{locale === 'fr'
+							? `Services professionnels de ${title.toLowerCase()} par Sandra Cleaning. Service de qualité, résultats fiables.`
+							: `Professional ${title.toLowerCase()} services by Sandra Cleaning. Quality service, reliable results.`}
 					</p>
 				</div>
 
@@ -143,12 +153,12 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
 				{/* CTA Section */}
 				<div className="text-center py-8">
-					<p className="text-text/70 mb-6">Ready to book this service?</p>
+					<p className="text-text/70 mb-6">{locale === 'fr' ? 'Prêt à réserver ce service?' : 'Ready to book this service?'}</p>
 					<a
-						href="/contact"
+						href={`/${locale}/contact`}
 						className="inline-flex items-center gap-2 rounded-xl text-white transition-all hover:scale-105 bg-primary hover:bg-primary/90 p-3 px-8 font-semibold"
 					>
-						Get Free Quote
+						{locale === 'fr' ? 'Obtenir un Devis Gratuit' : 'Get Free Quote'}
 					</a>
 				</div>
 			</div>
