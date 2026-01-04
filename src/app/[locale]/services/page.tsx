@@ -42,13 +42,8 @@ const serviceConfig = [
 	},
 ];
 
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-	const { locale } = await params;
-	const t = await getI18n(locale);
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+	const t = await getI18n();
 
 	return {
 		title: t('home.services.title'),
@@ -66,23 +61,19 @@ export async function generateMetadata({
 	};
 }
 
-export default async function ServicesPage({
-	params,
-}: {
-	params: Promise<{ locale: string }>;
-}) {
+export default async function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
 	const { locale } = await params;
-	const t = await getI18n(locale);
+	const t = await getI18n();
 
 	const serviceInfo = serviceConfig.map((service) => ({
 		...service,
-		title: t(`home.services.${service.i18nKey}.title` as any),
-		description: t(`home.services.${service.i18nKey}.description` as any),
+		title: t(`home.services.${service.i18nKey}.title` as any, {}),
+		description: t(`home.services.${service.i18nKey}.description` as any, {}),
 		features: [
-			t(`home.services.${service.i18nKey}.feature1` as any),
-			t(`home.services.${service.i18nKey}.feature2` as any),
-			t(`home.services.${service.i18nKey}.feature3` as any),
-			t(`home.services.${service.i18nKey}.feature4` as any),
+			t(`home.services.${service.i18nKey}.feature1` as any, {}),
+			t(`home.services.${service.i18nKey}.feature2` as any, {}),
+			t(`home.services.${service.i18nKey}.feature3` as any, {}),
+			t(`home.services.${service.i18nKey}.feature4` as any, {}),
 		],
 	}));
 
@@ -136,7 +127,6 @@ export default async function ServicesPage({
 										<h3 className="text-xl font-semibold text-text mb-3">{service.title}</h3>
 										<p className="text-text/70 mb-4 text-sm leading-relaxed">{service.description}</p>
 
-										{/* Features List */}
 										<ul className="space-y-2 mb-6">
 											{service.features.map((feature) => (
 												<li key={feature} className="flex items-center gap-2 text-sm text-text/60">
@@ -146,7 +136,6 @@ export default async function ServicesPage({
 											))}
 										</ul>
 
-										{/* Learn More Link */}
 										<div className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-medium">
 											{t('common.learnMore')}
 											<HugeiconsIcon icon={LinkSquare02FreeIcons} className="w-4 h-4" />
