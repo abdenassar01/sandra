@@ -186,13 +186,13 @@ export default {
 		// Contact Info
 		info: {
 			phone: 'Phone',
-			phoneValue: '+1 (555) 123-4567',
+			phoneValue: '+1 (438) 725-4115',
 			phoneDescription: 'Mon-Fri from 8am to 6pm.',
 			email: 'Email',
-			emailValue: 'info@sandracleaning.com',
+			emailValue: 'Sandrascleaningservicesmtl@gmail.com',
 			emailDescription: 'We respond within 24 hours.',
 			address: 'Address',
-			addressValue: '123 Clean Street, City, ST 12345',
+			addressValue: 'Montreal, QC, Canada, Quebec',
 			addressDescription: 'Visit our office for consultation.',
 			workingHours: 'Working Hours',
 			workingHoursValue: 'Mon - Sat: 8:00 AM - 6:00 PM',

@@ -38,7 +38,7 @@ const footerLinks = {
 };
 
 const socialLinks = [
-	{ icon: Facebook01FreeIcons, href: '#', label: 'Facebook' },
+	{ icon: Facebook01FreeIcons, href: 'https://www.facebook.com/share/1JV4QmLkFg/?mibextid=wwXIfr', label: 'Facebook' },
 	{ icon: NewTwitterRectangleIcon, href: '#', label: 'Twitter' },
 	{ icon: InstagramFreeIcons, href: '#', label: 'Instagram' },
 	{ icon: Linkedin01FreeIcons, href: '#', label: 'LinkedIn' },
@@ -108,15 +108,15 @@ export function Footer() {
 						<div className="space-y-3">
 							<div className="flex items-center gap-3 text-sm text-white/80">
 								<HugeiconsIcon icon={Call02FreeIcons} className="w-4 h-4" />
-								<span>+1 (555) 123-4567</span>
+								<span>+1 (438) 725-4115</span>
 							</div>
 							<div className="flex items-center gap-3 text-sm text-white/80">
 								<HugeiconsIcon icon={Mail01FreeIcons} className="w-4 h-4" />
-								<span>info@sandracleaning.com</span>
+								<span>Sandrascleaningservicesmtl@gmail.com</span>
 							</div>
 							<div className="flex items-center gap-3 text-sm text-white/80">
 								<HugeiconsIcon icon={Location01FreeIcons} className="w-4 h-4" />
-								<span>123 Clean Street, City, ST 12345</span>
+								<span>Montreal, QC, Canada, Quebec</span>
 							</div>
 						</div>
 						<Link
