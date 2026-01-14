@@ -19,7 +19,7 @@ const serviceConfig = [
 	{
 		slug: 'house-cleaning',
 		icon: Home01FreeIcons,
-		image: '/images/house-cleaning.jpeg',
+		image: '/images/house-cleaning.jpg',
 		i18nKey: 'houseCleaning',
 	},
 	{

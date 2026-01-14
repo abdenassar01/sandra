@@ -11,7 +11,7 @@ import { getI18n } from '@/lib/i18n/server';
 const servicesDir = path.join(process.cwd(), 'src/app/services/content');
 
 const serviceImages: Record<string, string> = {
-	'house-cleaning': '/images/house-cleaning.jpeg',
+	'house-cleaning': '/images/house-cleaning.jpg',
 	'office-cleaning': '/images/office-cleaning.jpeg',
 	'deep-cleaning': '/images/deep-cleaning.jpeg',
 	'post-construction': '/images/post-cleaning.png',
@@ -93,25 +93,25 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 			/>
 			<StructuredData data={createServiceStructuredData(title, description)} />
 
-			<div className="flex flex-col pt-6 gap-4 container">
-				{serviceImages[slug] && (
-					<div className="relative overflow-hidden rounded-2xl my-2">
-						<img src={serviceImages[slug]} alt={title} className="w-full h-full object-cover" />
-						<div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+			<div className="flex flex-col pt-6 gap-4 container px-0! ">
+				<div className="relative">
+					{serviceImages[slug] && (
+						<div className="relative overflow-hidden rounded-2xl my-2">
+							<img src={serviceImages[slug]} alt={title} className="w-full h-full object-cover" />
+							<div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
+						</div>
+					)}
+					<div className="text-center py-8 md:py-12 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background/10 backdrop-blur-xl rounded-2xl border border-primary/20">
+						<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+							<span className="text-white">{title}</span>
+						</h1>
+						<p className="text-white/60 max-w-2xl mx-auto">
+							{locale === 'fr'
+								? `Services professionnels de ${title.toLowerCase()} par Sandra Cleaning. Service de qualité, résultats fiables.`
+								: `Professional ${title.toLowerCase()} services by Sandra Cleaning. Quality service, reliable results.`}
+						</p>
 					</div>
-				)}
-
-				<div className="text-center py-6 md:py-12">
-					<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-						<span className="text-primary">{title}</span>
-					</h1>
-					<p className="text-text/70 max-w-2xl mx-auto">
-						{locale === 'fr'
-							? `Services professionnels de ${title.toLowerCase()} par Sandra Cleaning. Service de qualité, résultats fiables.`
-							: `Professional ${title.toLowerCase()} services by Sandra Cleaning. Quality service, reliable results.`}
-					</p>
 				</div>
-
 				{/* Content */}
 				<article className="bg-background-secondary rounded-2xl p-6 md:p-10 border border-secondary/20">
 					<div className="prose prose-lg max-w-none prose-headings:text-text prose-p:text-text/80 prose-strong:text-text prose-a:text-primary prose-li:text-text/80">
@@ -150,7 +150,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 						</ReactMarkdown>
 					</div>
 				</article>
-
 				{/* CTA Section */}
 				<div className="text-center py-8">
 					<p className="text-text/70 mb-6">{locale === 'fr' ? 'Prêt à réserver ce service?' : 'Ready to book this service?'}</p>

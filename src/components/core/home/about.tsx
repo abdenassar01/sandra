@@ -11,7 +11,7 @@ export async function About() {
 	return (
 		<div id="About" className="flex gap-4 flex-col md:flex-row">
 			<Image
-				src="/images/about.png"
+				src="/images/about.jpg"
 				alt="About Us"
 				width={500}
 				height={500}

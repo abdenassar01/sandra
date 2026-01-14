@@ -20,7 +20,7 @@ const serviceIcons = {
 };
 
 const serviceImages = {
-	house: '/images/house-cleaning.jpeg',
+	house: '/images/house-cleaning.jpg',
 	office: '/images/office-cleaning.jpeg',
 	deep: '/images/deep-cleaning.jpeg',
 	postConstruction: '/images/post-cleaning.png',
@@ -140,25 +140,25 @@ export function ServicesSection() {
 									/>
 								</div>
 
-							{/* Content */}
-							<h3 className="text-xl font-semibold text-text mb-3">{service.title}</h3>
-							<p className="text-text/70 mb-4 text-sm leading-relaxed">{service.description}</p>
+								{/* Content */}
+								<h3 className="text-xl font-semibold text-text mb-3">{service.title}</h3>
+								<p className="text-text/70 mb-4 text-sm leading-relaxed">{service.description}</p>
 
-							{/* Features List */}
-							<ul className="space-y-2 mb-6">
-								{service.features.map((feature, i) => (
-									<li key={i} className="flex items-center gap-2 text-sm text-text/60">
-										<div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-										{feature}
-									</li>
-								))}
-							</ul>
+								{/* Features List */}
+								<ul className="space-y-2 mb-6">
+									{service.features.map((feature, i) => (
+										<li key={i} className="flex items-center gap-2 text-sm text-text/60">
+											<div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+											{feature}
+										</li>
+									))}
+								</ul>
 
-							{/* Learn More Link */}
-							<div className="inline-flex items-center gap-2 text-primary group-hover:text-primary/80 transition-colors text-sm font-medium">
-								{t('common.learnMore')}
-								<HugeiconsIcon icon={LinkSquare02FreeIcons} className="w-4 h-4" />
-							</div>
+								{/* Learn More Link */}
+								<div className="inline-flex items-center gap-2 text-primary group-hover:text-primary/80 transition-colors text-sm font-medium">
+									{t('common.learnMore')}
+									<HugeiconsIcon icon={LinkSquare02FreeIcons} className="w-4 h-4" />
+								</div>
 							</div>
 						</Link>
 					))}
