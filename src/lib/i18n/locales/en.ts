@@ -20,9 +20,7 @@ export default {
 		contact: 'Contact',
 	},
 
-	// Home Page
 	home: {
-		// Hero Section
 		hero: {
 			title1: 'Professional',
 			title2: 'Cleaning Services',
@@ -36,11 +34,11 @@ export default {
 			title: 'About Us',
 			heading: 'Bringing Freshless, Confort and Care to Every Home',
 			paragraph1:
-				'At Santa\'s Clean Services, we bring the same joy and freshness of the holiday season to your home all year long! Our mission is simple: make your space shine so you can enjoy more time with the people and things you love.',
+				"At Sandra's Clean Services, we bring the same joy and freshness of the holiday season to your home all year long! Our mission is simple: make your space shine so you can enjoy more time with the people and things you love.",
 			paragraph2:
-				'We\'re a team of friendly, reliable cleaners who treat your home with the same care as our own. Using eco-friendly supplies and modern cleaning techniques, we make every room sparkle — whether it\'s your weekly clean, a deep refresh, or getting your new place ready before you move in.',
+				"We're a team of friendly, reliable cleaners who treat your home with the same care as our own. Using eco-friendly supplies and modern cleaning techniques, we make every room sparkle — whether it's your weekly clean, a deep refresh, or getting your new place ready before you move in.",
 			paragraph3:
-				'Fast, trustworthy, and always focused on quality, Santa\'s Clean Services is here to deliver comfort, cleanliness, and peace of mind with every visit.',
+				"Fast, trustworthy, and always focused on quality, Sandra's Clean Services is here to deliver comfort, cleanliness, and peace of mind with every visit.",
 			feature1: 'We Clean Your Home',
 			feature2: 'Relax & Enjoy',
 		},
@@ -181,7 +179,7 @@ export default {
 	// Contact Page
 	contact: {
 		title: 'Contact Us',
-		subtitle: 'Get in touch with us for a free quote or to schedule your first cleaning. We\'re here to help!',
+		subtitle: "Get in touch with us for a free quote or to schedule your first cleaning. We're here to help!",
 
 		// Contact Info
 		info: {
@@ -202,7 +200,7 @@ export default {
 		// Contact Form
 		form: {
 			title: 'Send Us a Message',
-			description: 'Fill out the form below and we\'ll get back to you within 24 hours.',
+			description: "Fill out the form below and we'll get back to you within 24 hours.",
 			fullName: 'Full Name',
 			fullNamePlaceholder: 'John Doe',
 			email: 'Email Address',
@@ -248,7 +246,7 @@ export default {
 			mismatch: 'New passwords do not match',
 			tooShort: 'New password must be at least 6 characters long',
 			submitReview: 'Submit Review',
-		 submitting: 'Submitting...',
+			submitting: 'Submitting...',
 			successMessage: 'Review submitted successfully! It will be visible after approval.',
 			errorMessage: 'Failed to submit review. Please try again.',
 		},

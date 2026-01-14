@@ -36,11 +36,11 @@ export default {
 			title: 'À Propos de Nous',
 			heading: 'Apporter Fraîcheur, Confort et Soin à Chaque Maison',
 			paragraph1:
-				"Chez Santa's Clean Services, nous apportons la même joie et fraîcheur de la saison des fêtes à votre maison toute l'année! Notre mission est simple : faire briller votre espace pour que vous puissiez profiter de plus de temps avec les personnes et les choses que vous aimez.",
+				"Chez Sandra's Clean Services, nous apportons la même joie et fraîcheur de la saison des fêtes à votre maison toute l'année! Notre mission est simple : faire briller votre espace pour que vous puissiez profiter de plus de temps avec les personnes et les choses que vous aimez.",
 			paragraph2:
-				"Nous sommes une équipe de nettoyeurs amicaux et fiables qui traitent votre maison avec le même soin que la nôtre. En utilisant des produits écologiques et des techniques de nettoyage modernes, nous faisons briller chaque pièce — que ce soit votre nettoyage hebdomadaire, un rafraîchissement en profondeur, ou la préparation de votre nouveau lieu avant votre emménagement.",
+				'Nous sommes une équipe de nettoyeurs amicaux et fiables qui traitent votre maison avec le même soin que la nôtre. En utilisant des produits écologiques et des techniques de nettoyage modernes, nous faisons briller chaque pièce — que ce soit votre nettoyage hebdomadaire, un rafraîchissement en profondeur, ou la préparation de votre nouveau lieu avant votre emménagement.',
 			paragraph3:
-				'Rapides, dignes de confiance et toujours axés sur la qualité, Santa\'s Clean Services est là pour offrir confort, propreté et tranquillité d\'esprit à chaque visite.',
+				"Rapides, dignes de confiance et toujours axés sur la qualité, Sandra's Clean Services est là pour offrir confort, propreté et tranquillité d'esprit à chaque visite.",
 			feature1: 'Nous Nettoyons Votre Maison',
 			feature2: 'Détendez-Vous & Profitez',
 		},
@@ -48,13 +48,15 @@ export default {
 		// Services Section
 		services: {
 			title: 'Nos Services',
-			subtitle: 'Nous offrons des solutions de nettoyage complètes conçues pour répondre à vos besoins spécifiques et dépasser vos attentes.',
-			customQuote: 'Besoin d\'une solution de nettoyage personnalisée?',
+			subtitle:
+				'Nous offrons des solutions de nettoyage complètes conçues pour répondre à vos besoins spécifiques et dépasser vos attentes.',
+			customQuote: "Besoin d'une solution de nettoyage personnalisée?",
 			getCustomQuote: 'Obtenir un Devis Personnalisé',
 
 			houseCleaning: {
 				title: 'Nettoyage de Maison',
-				description: 'Services de nettoyage domestique complets adaptés à vos besoins. De l\'entretien régulier au nettoyage en profondeur.',
+				description:
+					"Services de nettoyage domestique complets adaptés à vos besoins. De l'entretien régulier au nettoyage en profondeur.",
 				feature1: 'Nettoyage pièce par pièce',
 				feature2: 'Assainissement de la cuisine et de la salle de bain',
 				feature3: 'Soins des sols',
@@ -74,7 +76,7 @@ export default {
 				title: 'Nettoyage en Profondeur',
 				description: 'Service de nettoyage intensif pour un nettoyage complet et détaillé de chaque coin de votre espace.',
 				feature1: 'Nettoyage détaillé',
-				feature2: 'Zones difficiles d\'accès',
+				feature2: "Zones difficiles d'accès",
 				feature3: 'Nettoyage des appareils',
 				feature4: 'Plinthes et moulures',
 			},
@@ -101,7 +103,7 @@ export default {
 
 			expertCleaners: {
 				title: 'Nettoyeurs Experts',
-				description: 'Des professionnels formés avec des années d\'expérience dans les services de nettoyage.',
+				description: "Des professionnels formés avec des années d'expérience dans les services de nettoyage.",
 			},
 
 			onTimeService: {
@@ -121,7 +123,7 @@ export default {
 
 			satisfactionGuarantee: {
 				title: 'Garantie de Satisfaction',
-				description: 'Si vous n\'êtes pas satisfait, nous nettoierons à nouveau gratuitement.',
+				description: "Si vous n'êtes pas satisfait, nous nettoierons à nouveau gratuitement.",
 			},
 
 			stats: {
@@ -135,18 +137,18 @@ export default {
 		// Testimonials Section
 		testimonials: {
 			title: 'Ce Que Disent Nos Clients',
-			subtitle: "Ne nous croyez pas sur parole. Voici ce que nos clients satisfaits disent de nos services de nettoyage.",
+			subtitle: 'Ne nous croyez pas sur parole. Voici ce que nos clients satisfaits disent de nos services de nettoyage.',
 			noReviews: 'Aucun avis pour le moment. Soyez le premier à en laisser un!',
 			ctaTitle: 'Prêt à Découvrir le Nettoyage Professionnel?',
 			ctaDescription:
 				'Rejoignez nos clients satisfaits et découvrez pourquoi Sandra Cleaning est le choix de confiance pour les services de nettoyage professionnels.',
-			getStarted: 'Commencer Aujourd\'hui',
+			getStarted: "Commencer Aujourd'hui",
 			leaveReview: 'Laissez Votre Avis',
 			writeReview: 'Écrire un Avis',
 			writeReviewDescription: 'Partagez votre expérience de nos services',
 			previousReview: 'Avis précédent',
 			nextReview: 'Avis suivant',
-			goToReview: 'Aller à l\'avis {number}',
+			goToReview: "Aller à l'avis {number}",
 		},
 
 		// FAQ Section
@@ -163,12 +165,12 @@ export default {
 			fallback2: {
 				question: 'Vos nettoyeurs sont-ils assurés et vérifiés?',
 				answer:
-					'Oui, tous nos nettoyeurs sont entièrement assurés, vérifiés et formés professionnellement pour assurer votre sécurité et tranquillité d\'esprit.',
+					"Oui, tous nos nettoyeurs sont entièrement assurés, vérifiés et formés professionnellement pour assurer votre sécurité et tranquillité d'esprit.",
 			},
 			fallback3: {
 				question: 'Utilisez-vous des produits de nettoyage écologiques?',
 				answer:
-					'Absolument! Nous utilisons des produits de nettoyage écologiques et sans danger pour l\'environnement qui sont efficaces contre la saleté mais sans danger pour votre famille, vos animaux de compagnie et l\'environnement.',
+					"Absolument! Nous utilisons des produits de nettoyage écologiques et sans danger pour l'environnement qui sont efficaces contre la saleté mais sans danger pour votre famille, vos animaux de compagnie et l'environnement.",
 			},
 			fallback4: {
 				question: 'Comment puis-je obtenir un devis?',
@@ -228,8 +230,8 @@ export default {
 			reason3: 'Nettoyeurs entièrement assurés et vérifiés',
 			reason4: 'Produits de nettoyage écologiques',
 			reason5: 'Garantie de satisfaction à 100%',
-			reason6: 'Nettoyage d\'urgence disponible',
-			needHelp: 'Besoin d\'assistance immédiate?',
+			reason6: "Nettoyage d'urgence disponible",
+			needHelp: "Besoin d'assistance immédiate?",
 			needHelpDescription: 'Appelez-nous directement pour les besoins de nettoyage urgents.',
 		},
 
@@ -247,10 +249,10 @@ export default {
 			required: 'Le mot de passe actuel est requis pour changer le mot de passe',
 			mismatch: 'Les nouveaux mots de passe ne correspondent pas',
 			tooShort: 'Le nouveau mot de passe doit contenir au moins 6 caractères',
-			submitReview: 'Soumettre l\'Avis',
+			submitReview: "Soumettre l'Avis",
 			submitting: 'Soumission...',
 			successMessage: 'Avis soumis avec succès! Il sera visible après approbation.',
-			errorMessage: 'Échec de la soumission de l\'avis. Veuillez réessayer.',
+			errorMessage: "Échec de la soumission de l'avis. Veuillez réessayer.",
 		},
 	},
 } as const;
