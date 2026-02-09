@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { StructuredData, createBreadcrumbStructuredData, createServiceStructuredData } from '@/lib/seo';
-import { getI18n } from '@/lib/i18n/server';
+import { getI18n, getStaticParams } from '@/lib/i18n/server';
 
 const servicesDir = path.join(process.cwd(), 'src/app/services/content');
 
@@ -35,11 +35,19 @@ async function getServiceContent(slug: string, locale: string) {
 
 export async function generateStaticParams() {
 	const files = fs.readdirSync(servicesDir);
-	return files
+	const slugs = files
 		.filter((filename) => !filename.includes('-fr.mdx'))
-		.map((filename) => ({
-			slug: filename.replace('.mdx', ''),
-		}));
+		.map((filename) => filename.replace('.mdx', ''));
+
+	// Generate params for each locale and slug combination
+	const localeParams = getStaticParams();
+
+	return localeParams.flatMap((localeParam) =>
+		slugs.map((slug) => ({
+			...localeParam,
+			slug,
+		}))
+	);
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
@@ -86,9 +94,9 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 			{/* Structured Data */}
 			<StructuredData
 				data={createBreadcrumbStructuredData([
-					{ name: t('nav.home'), url: `https://sandracleaning.com/${locale}` },
-					{ name: t('nav.services'), url: `https://sandracleaning.com/${locale}/services` },
-					{ name: title, url: `https://sandracleaning.com/${locale}/services/${slug}` },
+					{ name: t('nav.home'), url: `https://sandrascleaning.com/${locale}` },
+					{ name: t('nav.services'), url: `https://sandrascleaning.com/${locale}/services` },
+					{ name: title, url: `https://sandrascleaning.com/${locale}/services/${slug}` },
 				])}
 			/>
 			<StructuredData data={createServiceStructuredData(title, description)} />
@@ -107,9 +115,16 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 						</h1>
 						<p className="text-white/60 max-w-2xl mx-auto">
 							{locale === 'fr'
-								? `Services professionnels de ${title.toLowerCase()} par Sandra Cleaning. Service de qualité, résultats fiables.`
-								: `Professional ${title.toLowerCase()} services by Sandra Cleaning. Quality service, reliable results.`}
+								? `Services professionnels de ${title.toLowerCase()} par Sandras Cleaning. Service de qualité, résultats fiables.`
+								: `Professional ${title.toLowerCase()} services by Sandras Cleaning. Quality service, reliable results.`}
 						</p>
+					</div>
+					{/* Scroll Indicator */}
+					<div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+						<span className="text-white/80 text-sm">{locale === 'fr' ? 'Défiler vers le bas' : 'Scroll down'}</span>
+						<svg className="w-6 h-6 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+						</svg>
 					</div>
 				</div>
 				{/* Content */}

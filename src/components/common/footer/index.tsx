@@ -15,6 +15,7 @@ import {
 	Call02FreeIcons,
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/utils';
+import { useCurrentLocale } from '@/lib/i18n/client';
 
 const footerLinks = {
 	quickLinks: [
@@ -32,8 +33,8 @@ const footerLinks = {
 	company: [
 		{ name: 'About Us', href: '#About' },
 		{ name: 'Contact', href: '/contact' },
-		{ name: 'Privacy Policy', href: '#' },
-		{ name: 'Terms of Service', href: '#' },
+		{ name: 'Privacy Policy', href: '/privacy' },
+		{ name: 'Terms of Service', href: '/terms' },
 	],
 };
 
@@ -45,6 +46,14 @@ const socialLinks = [
 ];
 
 export function Footer() {
+	const locale = useCurrentLocale();
+
+	// Helper function to prefix href with locale
+	const withLocale = (href: string) => {
+		if (href.startsWith('#') || href.startsWith('http')) return href;
+		return `/${locale}${href}`;
+	};
+
 	return (
 		<footer className="bg-black text-text rounded-t-2xl">
 			<div className="container mx-auto px-4 py-8 md:py-12">
@@ -80,7 +89,7 @@ export function Footer() {
 						<ul className="space-y-2">
 							{footerLinks.quickLinks.map((link) => (
 								<li key={link.name}>
-									<Link href={link.href} className="text-sm text-secondary/80 hover:text-primary transition-colors">
+									<Link href={withLocale(link.href)} className="text-sm text-secondary/80 hover:text-primary transition-colors">
 										{link.name}
 									</Link>
 								</li>
@@ -94,7 +103,7 @@ export function Footer() {
 						<ul className="space-y-2">
 							{footerLinks.services.map((link) => (
 								<li key={link.name}>
-									<Link href={link.href} className="text-sm text-secondary/80 hover:text-primary transition-colors">
+									<Link href={withLocale(link.href)} className="text-sm text-secondary/80 hover:text-primary transition-colors">
 										{link.name}
 									</Link>
 								</li>
@@ -120,7 +129,7 @@ export function Footer() {
 							</div>
 						</div>
 						<Link
-							href="/contact"
+							href={withLocale('/contact')}
 							className="inline-flex items-center gap-2 rounded-xl text-sm text-secondary transition-colors bg-secondary/10 hover:bg-secondary/30 p-3 px-6 w-full md:w-auto justify-center mt-4"
 						>
 							<span>Get Free Quote</span>
@@ -137,7 +146,7 @@ export function Footer() {
 					<p className="text-sm text-white">© 2024 Sandra Cleaning. All rights reserved.</p>
 					<div className="flex flex-wrap gap-4 text-sm">
 						{footerLinks.company.map((link) => (
-							<Link key={link.name} href={link.href} className="text-white/60 hover:text-secondary/50 transition-colors">
+							<Link key={link.name} href={withLocale(link.href)} className="text-white/60 hover:text-secondary/50 transition-colors">
 								{link.name}
 							</Link>
 						))}
