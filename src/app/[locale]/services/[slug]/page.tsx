@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { StructuredData, createBreadcrumbStructuredData, createServiceStructuredData } from '@/lib/seo';
 import { getI18n, getStaticParams } from '@/lib/i18n/server';
+import Image from 'next/image';
 
 const servicesDir = path.join(process.cwd(), 'src/app/services/content');
 
@@ -35,9 +36,7 @@ async function getServiceContent(slug: string, locale: string) {
 
 export async function generateStaticParams() {
 	const files = fs.readdirSync(servicesDir);
-	const slugs = files
-		.filter((filename) => !filename.includes('-fr.mdx'))
-		.map((filename) => filename.replace('.mdx', ''));
+	const slugs = files.filter((filename) => !filename.includes('-fr.mdx')).map((filename) => filename.replace('.mdx', ''));
 
 	// Generate params for each locale and slug combination
 	const localeParams = getStaticParams();
@@ -46,7 +45,7 @@ export async function generateStaticParams() {
 		slugs.map((slug) => ({
 			...localeParam,
 			slug,
-		}))
+		})),
 	);
 }
 
@@ -91,7 +90,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
 	return (
 		<>
-			{/* Structured Data */}
 			<StructuredData
 				data={createBreadcrumbStructuredData([
 					{ name: t('nav.home'), url: `https://sandrascleaning.com/${locale}` },
@@ -104,8 +102,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 			<div className="flex flex-col pt-6 gap-4 container px-0! ">
 				<div className="relative">
 					{serviceImages[slug] && (
-						<div className="relative overflow-hidden rounded-2xl my-2">
-							<img src={serviceImages[slug]} alt={title} className="w-full h-full object-cover" />
+						<div className="relative overflow-hidden rounded-2xl my-2 h-[70vh] w-full">
+							<Image src={serviceImages[slug]} alt={title} width={4000} height={2000} className="w-full h-full object-cover" />
 							<div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
 						</div>
 					)}
