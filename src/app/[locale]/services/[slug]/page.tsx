@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { StructuredData, createBreadcrumbStructuredData, createServiceStructuredData } from '@/lib/seo';
 import { getI18n, getStaticParams } from '@/lib/i18n/server';
+import { setStaticParamsLocale } from 'next-international/server';
 import Image from 'next/image';
 
 const servicesDir = path.join(process.cwd(), 'src/app/services/content');
@@ -51,6 +52,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
 	const { slug, locale } = await params;
+	setStaticParamsLocale(locale);
 	const content = await getServiceContent(slug, locale);
 
 	if (!content) {
@@ -75,6 +77,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ServicePage({ params }: { params: Promise<{ slug: string; locale: string }> }) {
 	const { slug, locale } = await params;
+	setStaticParamsLocale(locale);
 	const t = await getI18n();
 	const content = await getServiceContent(slug, locale);
 
