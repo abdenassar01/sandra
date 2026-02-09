@@ -40,13 +40,13 @@ export async function PUT(
 
 		const { id } = await params;
 		const body = await request.json();
-		const { question, answer, locale, sort_order } = body;
+		const { question, answer, locale, sortOrder } = body;
 
 		const success = await faqDb.updateFAQ(Number(id), {
 			question,
 			answer,
 			locale,
-			sort_order,
+			sortOrder,
 		});
 
 		if (!success) {

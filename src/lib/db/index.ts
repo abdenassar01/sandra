@@ -222,7 +222,11 @@ export const adminDb = {
 		const session = await prisma.adminSession.findUnique({
 			where: { id: sessionId },
 		});
-		return session || undefined;
+		if (!session) return undefined;
+		return {
+			...session,
+			expiresAt: Number(session.expiresAt),
+		};
 	},
 
 	// Delete session

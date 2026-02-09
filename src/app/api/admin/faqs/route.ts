@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 		}
 
 		const body = await request.json();
-		const { question, answer, locale, sort_order } = body;
+		const { question, answer, locale, sortOrder } = body;
 
 		if (!question || !answer) {
 			return NextResponse.json({ error: 'Question and answer are required' }, { status: 400 });
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 			question,
 			answer,
 			locale: locale || 'en',
-			sort_order: sort_order || 0,
+			sortOrder: sortOrder || 0,
 		});
 
 		return NextResponse.json({ faq }, { status: 201 });
