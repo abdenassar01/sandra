@@ -14,7 +14,7 @@ export async function GET(
 		}
 
 		const { id } = await params;
-		const faq = faqDb.getFAQById(Number(id));
+		const faq = await faqDb.getFAQById(Number(id));
 
 		if (!faq) {
 			return NextResponse.json({ error: 'FAQ not found' }, { status: 404 });
@@ -42,7 +42,7 @@ export async function PUT(
 		const body = await request.json();
 		const { question, answer, locale, sort_order } = body;
 
-		const success = faqDb.updateFAQ(Number(id), {
+		const success = await faqDb.updateFAQ(Number(id), {
 			question,
 			answer,
 			locale,
@@ -53,7 +53,7 @@ export async function PUT(
 			return NextResponse.json({ error: 'FAQ not found or no changes made' }, { status: 404 });
 		}
 
-		const updated = faqDb.getFAQById(Number(id));
+		const updated = await faqDb.getFAQById(Number(id));
 		return NextResponse.json({ faq: updated });
 	} catch (error) {
 		console.error('Update FAQ error:', error);
@@ -73,7 +73,7 @@ export async function DELETE(
 		}
 
 		const { id } = await params;
-		const success = faqDb.deleteFAQ(Number(id));
+		const success = await faqDb.deleteFAQ(Number(id));
 
 		if (!success) {
 			return NextResponse.json({ error: 'FAQ not found' }, { status: 404 });

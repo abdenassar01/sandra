@@ -18,7 +18,7 @@ export async function PATCH(
 		const { action } = body;
 
 		if (action === 'approve') {
-			const success = reviewsDb.approveReview(Number(id));
+			const success = await reviewsDb.approveReview(Number(id));
 			if (!success) {
 				return NextResponse.json({ error: 'Review not found' }, { status: 404 });
 			}
@@ -44,7 +44,7 @@ export async function DELETE(
 		}
 
 		const { id } = await params;
-		const success = reviewsDb.deleteReview(Number(id));
+		const success = await reviewsDb.deleteReview(Number(id));
 
 		if (!success) {
 			return NextResponse.json({ error: 'Review not found' }, { status: 404 });

@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  rating    Int
+  review    String   @db.Text
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([approved])
+  @@index([createdAt])
+  @@map("reviews")
+}
+
+model AdminUser {
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  passwordHash String         @map("password_hash")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  sessions     AdminSession[]
+
+  @@map("admin_users")
+}
+
+model AdminSession {
+  id        String    @id @map("id")
+  userId    Int       @map("user_id")
+  expiresAt BigInt    @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
+  @@index([userId], map: "admin_sessions_user_id_fkey")
+  @@map("admin_sessions")
+}
+
+model FAQ {
+  id        Int      @id @default(autoincrement())
+  question  String   @db.VarChar(500)
+  answer    String   @db.Text
+  locale    String   @default("en") @db.VarChar(10)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([locale])
+  @@index([sortOrder])
+  @@map("faqs")
+}

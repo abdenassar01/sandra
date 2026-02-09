@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getOptionalAuth } from '@/lib/admin/auth';
+import { LogoutButton } from '@/components/admin/logout-button';
 
 export default async function AdminLayout({
 	children,
@@ -63,15 +64,7 @@ export default async function AdminLayout({
 						</div>
 						{auth && (
 							<div className="flex items-center">
-								<form action="/api/admin/logout" method="POST">
-									<button
-										type="submit"
-										className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl text-white transition-all hover:scale-105"
-										style={{ backgroundColor: 'var(--error)' }}
-									>
-										Logout
-									</button>
-								</form>
+								<LogoutButton locale={locale} />
 							</div>
 						)}
 					</div>

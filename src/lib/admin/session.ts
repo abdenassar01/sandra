@@ -12,8 +12,8 @@ export async function createSession(userId: number): Promise<string> {
 	const sessionId = generateSessionId();
 	const expiresAt = Date.now() + SESSION_DURATION;
 
-	// Store session in SQLite
-	adminDb.createSession(sessionId, userId, expiresAt);
+	// Store session in database
+	await adminDb.createSession(sessionId, userId, expiresAt);
 
 	// Set cookie
 	const cookieStore = await cookies();
@@ -37,21 +37,21 @@ export async function getSession(): Promise<{ userId: number } | null> {
 	}
 
 	// Clean up expired sessions first (do this occasionally)
-	adminDb.cleanupExpiredSessions();
+	await adminDb.cleanupExpiredSessions();
 
-	const session = adminDb.getSession(sessionId);
+	const session = await adminDb.getSession(sessionId);
 	if (!session) {
 		return null;
 	}
 
 	// Check if session is expired
-	if (Date.now() > session.expires_at) {
-		adminDb.deleteSession(sessionId);
+	if (Date.now() > session.expiresAt) {
+		await adminDb.deleteSession(sessionId);
 		cookieStore.delete(SESSION_COOKIE_NAME);
 		return null;
 	}
 
-	return { userId: session.user_id };
+	return { userId: session.userId };
 }
 
 export async function destroySession(): Promise<void> {
@@ -59,7 +59,7 @@ export async function destroySession(): Promise<void> {
 	const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
 	if (sessionId) {
-		adminDb.deleteSession(sessionId);
+		await adminDb.deleteSession(sessionId);
 	}
 
 	cookieStore.delete(SESSION_COOKIE_NAME);

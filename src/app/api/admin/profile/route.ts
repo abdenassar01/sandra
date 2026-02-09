@@ -10,7 +10,7 @@ export async function GET() {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		const admin = adminDb.getAdminById(session.userId);
+		const admin = await adminDb.getAdminById(session.userId);
 		if (!admin) {
 			return NextResponse.json({ error: 'Admin not found' }, { status: 404 });
 		}
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		const admin = adminDb.getAdminById(session.userId);
+		const admin = await adminDb.getAdminById(session.userId);
 		if (!admin) {
 			return NextResponse.json({ error: 'Admin not found' }, { status: 404 });
 		}
@@ -48,13 +48,13 @@ export async function PUT(request: NextRequest) {
 			}
 
 			// Get admin with password hash
-			const adminWithHash = adminDb.getAdminById(session.userId);
-			if (!adminWithHash || !adminWithHash.password_hash) {
+			const adminWithHash = await adminDb.getAdminById(session.userId);
+			if (!adminWithHash || !adminWithHash.passwordHash) {
 				return NextResponse.json({ error: 'Admin not found' }, { status: 404 });
 			}
 
 			// Verify current password
-			if (!verifyPassword(currentPassword, adminWithHash.password_hash)) {
+			if (!verifyPassword(currentPassword, adminWithHash.passwordHash)) {
 				return NextResponse.json(
 					{ error: 'Current password is incorrect' },
 					{ status: 401 }
@@ -62,12 +62,12 @@ export async function PUT(request: NextRequest) {
 			}
 
 			// Update password
-			adminDb.updateAdminPassword(session.userId, newPassword);
+			await adminDb.updateAdminPassword(session.userId, newPassword);
 		}
 
 		// Update username if provided
 		if (username && username !== admin.username) {
-			const success = adminDb.updateAdminUsername(session.userId, username);
+			const success = await adminDb.updateAdminUsername(session.userId, username);
 			if (!success) {
 				return NextResponse.json(
 					{ error: 'Username already exists or update failed' },
@@ -77,7 +77,7 @@ export async function PUT(request: NextRequest) {
 		}
 
 		// Get updated admin
-		const updatedAdmin = adminDb.getAdminById(session.userId);
+		const updatedAdmin = await adminDb.getAdminById(session.userId);
 
 		return NextResponse.json({ admin: updatedAdmin });
 	} catch (error) {

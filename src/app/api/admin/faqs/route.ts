@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 		const { searchParams } = new URL(request.url);
 		const locale = searchParams.get('locale') || undefined;
 
-		const faqs = faqDb.getAllFAQs(locale);
+		const faqs = await faqDb.getAllFAQs(locale);
 		return NextResponse.json({ faqs });
 	} catch (error) {
 		console.error('Get FAQs error:', error);
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: 'Question and answer are required' }, { status: 400 });
 		}
 
-		const faq = faqDb.createFAQ({
+		const faq = await faqDb.createFAQ({
 			question,
 			answer,
 			locale: locale || 'en',

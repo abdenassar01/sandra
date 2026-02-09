@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 		}
 
 		// Verify admin credentials
-		const admin = adminDb.verifyAdmin(username, password);
+		const admin = await adminDb.verifyAdmin(username, password);
 		if (!admin) {
 			return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
 		}

@@ -10,7 +10,7 @@ export async function GET() {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		const reviews = reviewsDb.getAllReviews();
+		const reviews = await reviewsDb.getAllReviews();
 		return NextResponse.json({ reviews });
 	} catch (error) {
 		console.error('Get reviews error:', error);

@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 // GET /api/reviews - Fetch all approved reviews
 export async function GET() {
 	try {
-		const reviews = reviewsDb.getApprovedReviews();
+		const reviews = await reviewsDb.getApprovedReviews();
 		return NextResponse.json({ success: true, reviews });
 	} catch (error) {
 		console.error('Error fetching reviews:', error);
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 		}
 
 		// Add review to database
-		const newReview = reviewsDb.addReview({
+		const newReview = await reviewsDb.addReview({
 			name: name.trim(),
 			email: email.trim(),
 			rating,

@@ -6,10 +6,10 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 	const { locale } = await params;
 	const { admin } = await requireAuth(locale);
 
-	const allReviews = reviewsDb.getAllReviews();
-	const pendingReviews = allReviews.filter((r) => r.approved === 0);
-	const approvedReviews = allReviews.filter((r) => r.approved === 1);
-	const allFaqs = faqDb.getAllFAQs();
+	const allReviews = await reviewsDb.getAllReviews();
+	const pendingReviews = allReviews.filter((r) => r.approved === false);
+	const approvedReviews = allReviews.filter((r) => r.approved === true);
+	const allFaqs = await faqDb.getAllFAQs();
 
 	return (
 		<div className="">

@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
 		const { searchParams } = new URL(request.url);
 		const locale = searchParams.get('locale') || undefined;
 
-		const faqs = faqDb.getAllFAQs(locale);
+		const faqs = await faqDb.getAllFAQs(locale);
 		return NextResponse.json({ faqs });
 	} catch (error) {
 		console.error('Get FAQs error:', error);

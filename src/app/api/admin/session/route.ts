@@ -9,7 +9,7 @@ export async function GET() {
 			return NextResponse.json({ authenticated: false }, { status: 401 });
 		}
 
-		const admin = adminDb.getAdminById(session.userId);
+		const admin = await adminDb.getAdminById(session.userId);
 		if (!admin) {
 			return NextResponse.json({ authenticated: false }, { status: 401 });
 		}

@@ -9,7 +9,7 @@ export async function requireAuth(locale?: string) {
 		redirect(locale ? `/${locale}/admin/login` : '/');
 	}
 
-	const admin = adminDb.getAdminById(session.userId);
+	const admin = await adminDb.getAdminById(session.userId);
 	if (!admin) {
 		redirect(locale ? `/${locale}/admin/login` : '/');
 	}
@@ -23,7 +23,7 @@ export async function getOptionalAuth() {
 		return null;
 	}
 
-	const admin = adminDb.getAdminById(session.userId);
+	const admin = await adminDb.getAdminById(session.userId);
 	if (!admin) {
 		return null;
 	}
