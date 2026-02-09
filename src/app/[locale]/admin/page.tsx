@@ -24,37 +24,25 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 				</div>
 
 				<div className="grid grid-cols-1 gap-3 sm:grid-cols-3 mb-8">
-					<div className="rounded-2xl p-6 border border-primary/10">
+					<div className="rounded-2xl p-6 border border-primary/10 bg-background-secondary">
 						<div className="flex items-center">
 							<div className="flex-1">
-								<p className="text-sm font-medium" style={{ color: 'var(--text)', opacity: 0.6 }}>
-									Total Reviews
-								</p>
-								<p className="mt-2 text-3xl font-bold" style={{ color: 'var(--text)' }}>
-									{allReviews.length}
-								</p>
+								<p className="text-sm font-medium">Total Reviews</p>
+								<p className="mt-2 text-3xl font-bold">{allReviews.length}</p>
 							</div>
 						</div>
 					</div>
 
-					<div
-						className="rounded-2xl p-6 border border-primary/10"
-						style={{ backgroundColor: 'var(--background-secondary)', borderColor: 'var(--secondary/20)' }}
-					>
+					<div className="rounded-2xl p-6 border border-primary/10 bg-background-secondary">
 						<div className="flex items-center justify-between">
 							<div className="flex-1">
-								<p className="text-sm font-medium" style={{ color: 'var(--text)', opacity: 0.6 }}>
-									Pending Reviews
-								</p>
-								<p className="mt-2 text-3xl font-bold" style={{ color: 'var(--primary)' }}>
-									{pendingReviews.length}
-								</p>
+								<p className="text-sm font-medium">Pending Reviews</p>
+								<p className="mt-2 text-3xl font-bold">{pendingReviews.length}</p>
 							</div>
 							{pendingReviews.length > 0 && (
 								<Link
 									href={`/${locale}/admin/reviews`}
 									className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-semibold transition-all hover:scale-105"
-									style={{ backgroundColor: 'var(--primary)', color: 'white' }}
 								>
 									Review
 								</Link>
@@ -62,7 +50,7 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 						</div>
 					</div>
 
-					<div className="rounded-2xl p-6 border border-primary/10">
+					<div className="rounded-2xl p-6 border border-primary/10 bg-background-secondary">
 						<div className="flex items-center">
 							<div className="flex-1">
 								<p className="text-sm font-medium">Total FAQs</p>
@@ -72,34 +60,27 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 					</div>
 				</div>
 
-				{/* Quick Actions & Pending */}
 				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-					{/* Quick Actions */}
-					<div
-						className="rounded-2xl p-6 border border-primary/10"
-						style={{ backgroundColor: 'var(--background-secondary)', borderColor: 'var(--secondary/20)' }}
-					>
+					<div className="rounded-2xl p-6 border border-primary/10 bg-background-secondary">
 						<h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>
 							Quick Actions
 						</h3>
 						<div className="space-y-3">
 							<Link
 								href={`/${locale}/admin/reviews`}
-								className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold transition-all hover:scale-105"
-								style={{ backgroundColor: 'var(--primary)', color: 'white' }}
+								className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold border border-primary/10 transition-all hover:scale-105"
 							>
 								Manage Reviews
 							</Link>
 							<Link
 								href={`/${locale}/admin/faqs`}
-								className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold transition-all hover:scale-105"
+								className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold border border-primary/10 transition-all hover:scale-105"
 							>
 								Manage FAQs
 							</Link>
 							<Link
 								href={`/${locale}/admin/profile`}
 								className="block w-full text-center px-4 py-3 rounded-xl text-sm font-semibold border border-primary/10 transition-all hover:scale-105"
-								style={{ borderColor: 'var(--secondary/20)', color: 'var(--text)' }}
 							>
 								Update Profile
 							</Link>

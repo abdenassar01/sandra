@@ -61,8 +61,9 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
 			rating: 5,
 			review: '',
 		},
-		onSubmit: async ({ value }) => {
+		onSubmit: async ({ value, formApi }) => {
 			await mutation.mutateAsync(value);
+			formApi.reset();
 		},
 	});
 

@@ -267,7 +267,7 @@ export default function AdminFAQsPage() {
 												onBlur={field.handleBlur}
 												onChange={(e) => field.handleChange(e.target.value)}
 												placeholder="Enter the question"
-												className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
+												className="w-full px-4 py-3 rounded-xl border border-primary/10 bg-white focus:outline-none focus:ring-2 text-sm transition-all"
 												style={{ borderColor: 'var(--secondary/20)' }}
 												disabled={isPending}
 											/>
@@ -291,7 +291,7 @@ export default function AdminFAQsPage() {
 												onBlur={field.handleBlur}
 												onChange={(e) => field.handleChange(e.target.value)}
 												placeholder="Enter the answer"
-												className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all resize-none"
+												className="w-full px-4 py-3 rounded-xl border border-primary/10 bg-white focus:outline-none focus:ring-2 text-sm transition-all resize-none"
 												style={{ borderColor: 'var(--secondary/20)' }}
 												disabled={isPending}
 											/>
@@ -314,7 +314,7 @@ export default function AdminFAQsPage() {
 													value={field.state.value}
 													onBlur={field.handleBlur}
 													onChange={(e) => field.handleChange(e.target.value)}
-													className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all appearance-none"
+													className="w-full px-4 py-3 rounded-xl border border-primary/10 bg-white focus:outline-none focus:ring-2 text-sm transition-all appearance-none"
 													style={{ borderColor: 'var(--secondary/20)' }}
 													disabled={isPending}
 												>
@@ -341,7 +341,7 @@ export default function AdminFAQsPage() {
 													value={field.state.value}
 													onBlur={field.handleBlur}
 													onChange={(e) => field.handleChange(parseInt(e.target.value) || 0)}
-													className="w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-sm transition-all"
+													className="w-full px-4 py-3 rounded-xl border border-primary/10 bg-white focus:outline-none focus:ring-2 text-sm transition-all"
 													style={{ borderColor: 'var(--secondary/20)' }}
 													disabled={isPending}
 												/>
@@ -355,7 +355,7 @@ export default function AdminFAQsPage() {
 								<button
 									type="button"
 									onClick={closeForm}
-									className="px-6 py-3 rounded-xl text-sm font-semibold border transition-all bg-teal-400/10 text-teal-400"
+									className="px-6 py-3 rounded-xl text-sm font-semibold border border-primary/10 transition-all bg-orange-400/10 text-orange-400"
 									disabled={isPending}
 								>
 									Cancel

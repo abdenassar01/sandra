@@ -10,8 +10,8 @@ interface Review {
 	email: string;
 	rating: number;
 	review: string;
-	approved: number;
-	created_at: string;
+	approved: boolean;
+	createdAt: string;
 }
 
 interface ReviewsResponse {
@@ -94,12 +94,12 @@ export default function AdminReviewsPage() {
 	};
 
 	const filteredReviews = reviews.filter((review) => {
-		if (filter === 'pending') return review.approved === 0;
-		if (filter === 'approved') return review.approved === 1;
+		if (filter === 'pending') return review.approved === false;
+		if (filter === 'approved') return review.approved === true;
 		return true;
 	});
 
-	const pendingCount = reviews.filter((r) => r.approved === 0).length;
+	const pendingCount = reviews.filter((r) => r.approved === false).length;
 
 	if (isLoading) {
 		return (
@@ -166,7 +166,7 @@ export default function AdminReviewsPage() {
 							color: filter === 'approved' ? 'var(--text)' : 'var(--text)',
 						}}
 					>
-						Approved ({reviews.filter((r) => r.approved === 1).length})
+						Approved ({reviews.filter((r) => r.approved === true).length})
 					</button>
 				</div>
 
@@ -195,7 +195,7 @@ export default function AdminReviewsPage() {
 												>
 													{review.rating} / 5
 												</span>
-												{review.approved === 0 ? (
+												{review.approved === false ? (
 													<span
 														className="px-2 py-0.5 rounded-full text-xs font-semibold"
 														style={{ backgroundColor: 'var(--secondary/20)', color: 'var(--text)' }}
@@ -218,11 +218,11 @@ export default function AdminReviewsPage() {
 												{review.review}
 											</p>
 											<p className="mt-1 text-xs" style={{ color: 'var(--text)', opacity: 0.4 }}>
-												{new Date(review.created_at).toLocaleString()}
+												{new Date(review.createdAt).toLocaleString()}
 											</p>
 										</div>
 										<div className="flex gap-2 sm:self-center">
-											{review.approved === 0 && (
+											{review.approved === false && (
 												<button
 													onClick={() => handleApprove(review.id)}
 													disabled={approveMutation.isPending}
